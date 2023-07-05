@@ -6,15 +6,30 @@
           <h4>Connectez-vous</h4>
         </div>
         <form action="" class="form">
-          <input type="email" id="email" placeholder="Email" class="form_input" />
+          <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
           <span class="form_info">Rentrez une adresse e-mail valide</span>
         </form>
+        <button class="button" @click="fetchData">Envoyer</button>
       </main>
     </template>
   </Layout>
 </template>
 
-<script setup></script>
+<script setup>
+const emailRef = ref(null)
+
+const fetchData = async () => {
+  try {
+    const response = await fetch(`http://localhost:5050/auth/magic?email=${emailRef.value}`)
+    const data = await response.json()
+    console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+onMounted(() => {})
+</script>
 
 <style lang="scss" scoped>
 .main {
@@ -61,6 +76,13 @@
     &_input:focus {
       border: 1px solid var(--black);
     }
+  }
+
+  .button {
+    background-color: red;
+    padding: 1rem;
+    pointer-events: all;
+    cursor: pointer;
   }
 }
 </style>
