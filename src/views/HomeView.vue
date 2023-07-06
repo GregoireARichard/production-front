@@ -9,13 +9,15 @@
           <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
           <span class="form_info">Rentrez une adresse e-mail valide</span>
         </form>
-        <button class="button" @click="fetchData">Envoyer</button>
+        <Button @click="fetchData">Envoyer le mail</Button>
       </main>
     </template>
   </Layout>
 </template>
 
 <script setup>
+import Button from '@button/Button.vue'
+
 const emailRef = ref(null)
 
 const fetchData = async (e) => {
@@ -87,13 +89,6 @@ onMounted(() => {})
     &_input:focus {
       border: 1px solid var(--black);
     }
-  }
-
-  .button {
-    background-color: red;
-    padding: 1rem;
-    pointer-events: all;
-    cursor: pointer;
   }
 }
 </style>
