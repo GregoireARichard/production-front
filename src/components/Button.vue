@@ -8,17 +8,19 @@
 
 <style lang="scss" scoped>
 .button {
-  background-color: black;
+  font-size: 1.2rem;
+  font-weight: bold;
   color: white;
-  padding: 1.5rem;
+  text-transform: uppercase;
+  padding: 1.7rem 2rem;
+  border-radius: 0.5rem;
+  background-color: black;
   cursor: pointer;
-  border-radius: 5px;
+
   &:hover {
-    background-color: white;
     color: black;
-    border: solid 1px;
-    border-color: black;
-    box-shadow: 0px 0px 5px 0px rgba(#000000, 0.6);
+    border: 1px solid black;
+    background-color: white;
   }
 }
 </style>
