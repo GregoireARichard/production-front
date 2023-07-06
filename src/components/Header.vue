@@ -1,9 +1,7 @@
 <template>
   <header class="header">
     <div class="wrapper">
-      <p class="text">( MT4 )</p>
-      <h1>Projet de Production</h1>
-      <p class="text">( LE CHALLENGE 2024 )</p>
+      <h1>LE CHALLENGE 2024</h1>
     </div>
   </header>
 </template>
@@ -17,17 +15,19 @@
   display: block;
   width: 100%;
   height: 6rem;
+  background-color: #ccb4f0;
   z-index: 100;
 
   .wrapper {
+    position: relative;
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
     height: 100%;
     padding: 0 2rem;
   }
 
-  .brand {
+  h1  {
     font-size: 1.4rem;
     font-weight: 600;
     text-transform: uppercase;
