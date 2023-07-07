@@ -15,15 +15,19 @@
   padding: 1.7rem 2rem;
   margin-top: 4rem;
   border-radius: 0.5rem;
-  border: 1px solid transparent;
   background-color: black;
   pointer-events: all;
   cursor: pointer;
 
   &:hover {
     color: black;
-    border: 1px solid black;
-    background-color: transparent;
+    box-shadow: 0px 0px 0px 1px black;
+    background-color: white;
+  }
+  &:active {
+    color: rgb(199, 199, 199);
+    background-color: white;
+    box-shadow: 0px 0px 3px 1px white;
   }
 }
 </style>
