@@ -10,10 +10,10 @@
               fonctionne pas).
             </p>
           </div>
-          <form class="form">
+          <form action="" class="form">
             <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
-            <button class="form_btn" @click="fetchData">Envoyer</button>
           </form>
+          <Button @click="fetchData">Envoyer le mail</Button>
         </div>
       </main>
     </template>
@@ -21,6 +21,8 @@
 </template>
 
 <script setup>
+import Button from '@button/Button.vue'
+
 const emailRef = ref(null)
 
 const fetchData = async (e) => {
@@ -123,13 +125,6 @@ onMounted(() => {})
       &::placeholder {
         color: #000;
       }
-    }
-
-    &_btn {
-      background-color: red;
-      padding: 1rem;
-      pointer-events: all;
-      cursor: pointer;
     }
   }
 }
