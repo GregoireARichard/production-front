@@ -11,7 +11,7 @@
             </p>
           </div>
           <form action="" class="form">
-            <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" />
+            <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
           <Button @click="fetchData">Envoyer le mail</Button>
@@ -119,7 +119,7 @@ onMounted(() => {})
       line-height: 1.2;
     }
   }
-
+  
   .form {
     position: relative;
     display: block;
