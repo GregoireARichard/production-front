@@ -11,7 +11,7 @@
             </p>
           </div>
           <form action="" class="form">
-            <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
+            <Input type="email" placeholder="Email" v-model="emailRef" required />
             <span class="form_info">Rentrez un email valide</span>
           </form>
           <Button @click="fetchData">Envoyer le mail</Button>
@@ -93,29 +93,6 @@ onMounted(() => {})
       font-size: 1.6rem;
       font-weight: normal;
       line-height: 1.2;
-    }
-  }
-
-  .form {
-    position: relative;
-    display: block;
-    width: 100%;
-
-    &_input {
-      display: block;
-      font-size: 1.6rem;
-      font-weight: medium;
-      width: 52rem;
-      height: 5rem;
-      padding: 0 2.5rem;
-      margin-bottom: 1rem;
-      border-radius: 5rem;
-      border: 1px solid #000;
-      background-color: #9483ac;
-
-      &::placeholder {
-        color: #000;
-      }
     }
   }
 }
