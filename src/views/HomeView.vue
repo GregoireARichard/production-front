@@ -118,7 +118,7 @@ onMounted(() => {})
       margin-bottom: 4rem;
       border-radius: 5rem;
       border: 1px solid #000;
-      background-color: transparent;
+      background-color: #9483ac;
 
       &::placeholder {
         color: #000;
