@@ -13,14 +13,17 @@
   color: white;
   text-transform: uppercase;
   padding: 1.7rem 2rem;
+  margin-top: 4rem;
   border-radius: 0.5rem;
+  border: 1px solid transparent;
   background-color: black;
+  pointer-events: all;
   cursor: pointer;
 
   &:hover {
     color: black;
     border: 1px solid black;
-    background-color: white;
+    background-color: transparent;
   }
 }
 </style>

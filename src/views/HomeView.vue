@@ -12,6 +12,7 @@
           </div>
           <form action="" class="form">
             <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
+            <span class="form_info">Rentrez un email valide</span>
           </form>
           <Button @click="fetchData">Envoyer le mail</Button>
         </div>
@@ -20,12 +21,12 @@
   </Layout>
 </template>
 
-<script setup>
-import Button from '@button/Button.vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 
-const emailRef = ref(null)
+const emailRef = ref<string | null>(null)
 
-const fetchData = async (e) => {
+const fetchData = async (e: Event) => {
   e.preventDefault()
 
   try {
@@ -41,16 +42,6 @@ const fetchData = async (e) => {
     console.error(error)
   }
 }
-
-// const fetchData = async () => {
-//   try {
-//     const response = await fetch(`http://localhost:5050/auth/magic?email=${emailRef.value}`)
-//     const data = await response.json()
-//     console.log(data)
-//   } catch (error) {
-//     console.error(error)
-//   }
-// }
 
 onMounted(() => {})
 </script>
@@ -117,7 +108,7 @@ onMounted(() => {})
       width: 52rem;
       height: 5rem;
       padding: 0 2.5rem;
-      margin-bottom: 4rem;
+      margin-bottom: 1rem;
       border-radius: 5rem;
       border: 1px solid #000;
       background-color: #9483ac;
@@ -129,3 +120,13 @@ onMounted(() => {})
   }
 }
 </style>
+
+<!-- // const fetchData = async () => {
+  //   try {
+  //     const response = await fetch(`http://localhost:5050/auth/magic?email=${emailRef.value}`)
+  //     const data = await response.json()
+  //     console.log(data)
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // } -->
