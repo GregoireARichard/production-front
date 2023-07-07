@@ -2,14 +2,19 @@
   <Layout>
     <template #main>
       <main class="main">
-        <div class="header">
-          <h4>Connectez-vous</h4>
+        <div class="block">
+          <div class="header">
+            <h4 class="header_title">Connectez-vous</h4>
+            <p class="header_text">
+              Un email sera envoyé à l'adresse indiquée afin de vous identifier. (Attention: le domaine hetic.eu ne
+              fonctionne pas).
+            </p>
+          </div>
+          <form action="" class="form">
+            <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
+          </form>
+          <Button @click="fetchData">Envoyer le mail</Button>
         </div>
-        <form action="" class="form">
-          <input type="email" placeholder="Email" class="form_input" v-model="emailRef" />
-          <span class="form_info">Rentrez une adresse e-mail valide</span>
-        </form>
-        <Button @click="fetchData">Envoyer le mail</Button>
       </main>
     </template>
   </Layout>
@@ -60,15 +65,43 @@ onMounted(() => {})
   min-height: 100vh;
   padding: 10rem 40rem;
 
+  .block {
+    position: relative;
+    padding: 5rem;
+    border-radius: 2rem;
+    background-color: #ccb4f0;
+  }
+
   .header {
     position: relative;
     width: 100%;
     margin-bottom: 3rem;
 
-    h4 {
+    &_title {
+      position: relative;
       font-size: 1.6rem;
-      font-weight: 600;
+      font-weight: bold;
       text-transform: uppercase;
+      margin-bottom: 2rem;
+      margin-left: 1.4rem;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -1.4rem;
+        transform: translate(-50%, -50%);
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background-color: black;
+      }
+    }
+
+    &_text {
+      font-size: 1.6rem;
+      font-weight: normal;
+      line-height: 1.2;
     }
   }
 
@@ -79,15 +112,19 @@ onMounted(() => {})
 
     &_input {
       display: block;
-      width: 100%;
-      height: 4.5rem;
-      padding: 0.8rem 1rem;
-      margin-bottom: 2rem;
+      font-size: 1.6rem;
+      font-weight: medium;
+      width: 52rem;
+      height: 5rem;
+      padding: 0 2.5rem;
+      margin-bottom: 4rem;
+      border-radius: 5rem;
       border: 1px solid #000;
-    }
+      background-color: #9483ac;
 
-    &_input:focus {
-      border: 1px solid var(--black);
+      &::placeholder {
+        color: #000;
+      }
     }
   }
 }
