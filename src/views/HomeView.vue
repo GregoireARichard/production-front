@@ -3,19 +3,19 @@
     <template #main>
       <main class="main">
         <div class="block">
-          <div class="header">
-            <h4 class="header_title">Connectez-vous</h4>
-            <p class="header_text">
+          <div class="head">
+            <h4 class="head_title">Connectez-vous</h4>
+            <p class="head_text">
               Un email sera envoyé à l'adresse indiquée afin de vous identifier. (Attention: le domaine hetic.eu ne
               fonctionne pas).
             </p>
             <Toasters name="attention">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
-            <Input type="email" placeholder="Email" v-model="emailRef" required />
-            <span class="form_info">Rentrez un email valide</span>
+            <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
+            <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData">Envoyer le mail</Button>
+          <Button @click="fetchData"> Envoyer le mail </Button>
         </div>
       </main>
     </template>
@@ -24,21 +24,63 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import useConnectionLink from '@/composables/useConnectionLink'
+
+const { setConnectionLink, connectionLink } = useConnectionLink()
 
 const emailRef = ref<string | null>(null)
+const inputRef = ref<HTMLElement | null>(null)
+const infoRef = ref<HTMLElement | null>(null)
+const error = ref<boolean>(false)
+
+const checkEmail = (e) => {
+  const regexEmail = /\S+@\S+\.\S+/
+
+  emailRef.value = e.target.value
+
+  if (e.target.value.search(regexEmail) === 0) {
+    if (inputRef.value) {
+      inputRef.value.style.borderColor = 'black'
+    }
+  } else if (e.target.value.search(regexEmail) === -1) {
+    if (inputRef.value) {
+      error.value = true
+      inputRef.value.style.borderColor = 'red'
+    }
+  }
+}
 
 const fetchData = async (e: Event) => {
-  e.preventDefault()
-
   try {
-    const response = await fetch('http://localhost:5050/user/register', {
+    const res = await fetch('http://localhost:5050/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email: emailRef?.value }),
     })
-    console.log(response)
+    const data = await res.json()
+
+    setConnectionLink(data?.details.linkJwt)
+
+    console.log('LINK', connectionLink.value)
+
+    //   infoRef.value && (infoRef.value.style.display = 'block')
+    //   inputRef.value && (inputRef.value.style.borderColor = 'red')
+    // } else {
+    //   const router = createRouter({
+    //     history: createWebHistory(),
+    //     linkActiveClass: 'active',
+    //     routes: [
+    //       { path: '/', component: HomeView },
+    //       { path: '/auth/login', component: LoginView },
+    //     ],
+    //   })
+    //   router.push('/auth/login')
+    // }
   } catch (error) {
     console.error(error)
   }
@@ -64,7 +106,7 @@ onMounted(() => {})
     background-color: #ccb4f0;
   }
 
-  .header {
+  .head {
     position: relative;
     width: 100%;
     margin-bottom: 3rem;
@@ -96,15 +138,46 @@ onMounted(() => {})
       line-height: 1.2;
     }
   }
+
+  .form {
+    position: relative;
+    display: block;
+    width: 100%;
+
+    &_input {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: medium;
+      width: 52rem;
+      height: 5rem;
+      padding: 0 2.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 5rem;
+      border: 1px solid #000;
+      background-color: #9483ac;
+
+      &::placeholder {
+        color: #000;
+      }
+    }
+
+    &_icon {
+      /* display: none; */
+      position: absolute;
+      top: 50%;
+      right: 2.5rem;
+      transform: translate(-50%, -50%);
+      font-size: 2.5rem;
+      color: #000;
+    }
+
+    &_info {
+      display: none;
+      font-size: 1.4rem;
+      font-weight: normal;
+      color: #000;
+      padding-left: 2.5rem;
+    }
+  }
 }
 </style>
-
-<!-- // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5050/auth/magic?email=${emailRef.value}`)
-  //     const data = await response.json()
-  //     console.log(data)
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // } -->

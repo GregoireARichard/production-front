@@ -31,7 +31,7 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router',
-        { '@iconify/vue': ['Icon'], gsap: ['vendor/gsap'] }, // import { Icon } from '@iconify/vue'
+        { '@ionic/vue': ['IonIcon'] }, // import { Icon } from '@iconify/vue'
       ],
       dts: 'src/auto-imports.d.ts',
       vueTemplate: true,
