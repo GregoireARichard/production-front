@@ -14,7 +14,7 @@
             <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData">Envoyer le mail</Button>
+          <Button @click="fetchData"> Envoyer le mail </Button>
         </div>
       </main>
     </template>
@@ -23,11 +23,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import useConnectionLink from '@/composables/useConnectionLink'
+
+const { setConnectionLink, connectionLink } = useConnectionLink()
 
 const emailRef = ref<string | null>(null)
 const inputRef = ref<HTMLElement | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
-const error = ref<boolean>()
+const error = ref<boolean>(false)
 
 const checkEmail = (e) => {
   const regexEmail = /\S+@\S+\.\S+/
@@ -40,28 +46,40 @@ const checkEmail = (e) => {
     }
   } else if (e.target.value.search(regexEmail) === -1) {
     if (inputRef.value) {
+      error.value = true
       inputRef.value.style.borderColor = 'red'
     }
   }
 }
 
 const fetchData = async (e: Event) => {
-  e.preventDefault()
-
   try {
-    const response = await fetch('http://localhost:5050/user/register', {
+    const res = await fetch('http://localhost:5050/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email: emailRef?.value }),
     })
-    error.value = response.ok
+    const data = await res.json()
 
-    if (!response.ok) {
-      infoRef.value ? (infoRef.value.style.display = 'block') : null
-      inputRef.value && (inputRef.value.style.borderColor = 'red')
-    }
+    setConnectionLink(data?.details.linkJwt)
+
+    console.log('LINK', connectionLink.value)
+
+    //   infoRef.value && (infoRef.value.style.display = 'block')
+    //   inputRef.value && (inputRef.value.style.borderColor = 'red')
+    // } else {
+    //   const router = createRouter({
+    //     history: createWebHistory(),
+    //     linkActiveClass: 'active',
+    //     routes: [
+    //       { path: '/', component: HomeView },
+    //       { path: '/auth/login', component: LoginView },
+    //     ],
+    //   })
+    //   router.push('/auth/login')
+    // }
   } catch (error) {
     console.error(error)
   }
@@ -119,7 +137,7 @@ onMounted(() => {})
       line-height: 1.2;
     }
   }
-  
+
   .form {
     position: relative;
     display: block;
@@ -162,13 +180,3 @@ onMounted(() => {})
   }
 }
 </style>
-
-<!-- // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:5050/auth/magic?email=${emailRef.value}`)
-  //     const data = await response.json()
-  //     console.log(data)
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // } -->
