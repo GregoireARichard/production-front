@@ -9,6 +9,7 @@
               Un email sera envoyé à l'adresse indiquée afin de vous identifier. (Attention: le domaine hetic.eu ne
               fonctionne pas).
             </p>
+            <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
             <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
