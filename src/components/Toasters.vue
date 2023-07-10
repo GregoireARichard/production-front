@@ -3,7 +3,7 @@
     :class="[
       'toaster-container',
       { valid: name === 'valid' },
-      { attention: name === 'caution' },
+      { caution: name === 'caution' },
       { error: name === 'error' },
     ]"
   >
@@ -15,29 +15,32 @@
 </template>
 <script setup lang="ts">
 interface Props {
-  name?: keyof typeof toasterIcon
+  name?: keyof typeof toasterIcon;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   name: 'valid',
 })
 
+const iconPath = './public/icons'
 const toasterIcon = {
-  valid: {
-    url: './icons/check.svg',
+  'valid': {
+    url: iconPath + '/check.svg',
     alt: 'icons check icon',
   },
-  caution: {
-    url: './icons/attention.svg',
+  'caution': {
+    url: iconPath + '/attention.svg',
     alt: 'warning icon',
   },
-  error: {
-    url: './icons/cross.svg',
+  'error': {
+    url: iconPath + '/cross.svg',
     alt: 'cross icon',
   },
 }
 const iconUrl = `${toasterIcon[props.name].url}`
 const iconAlt = `${toasterIcon[props.name].alt}`
+
+// console.log(iconUrl)
 </script>
 <style scope lang="scss">
 .toaster-container {
