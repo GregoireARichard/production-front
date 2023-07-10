@@ -9,7 +9,7 @@
             <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
-            <input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
+            <Input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
           <Button @click="fetchData"> Envoyer le mail </Button>
