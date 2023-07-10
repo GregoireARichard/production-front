@@ -13,7 +13,6 @@
   color: white;
   text-transform: uppercase;
   padding: 1.7rem 2rem;
-  margin-top: 4rem;
   border-radius: 0.5rem;
   background-color: black;
   pointer-events: all;

@@ -5,10 +5,7 @@
         <div class="block">
           <div class="head">
             <h4 class="head_title">Connectez-vous</h4>
-            <p class="head_text">
-              Un email sera envoyé à l'adresse indiquée afin de vous identifier. (Attention: le domaine hetic.eu ne
-              fonctionne pas).
-            </p>
+            <p class="head_text">Un email sera envoyé à l'adresse indiquée afin de vous identifier.</p>
             <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
@@ -23,13 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/auth/LoginView.vue'
-import useConnectionLink from '@/composables/useConnectionLink'
+import { ref } from 'vue'
+// import useConnectionLink from '@/composables/useConnectionLink'
+import { store } from '@/composables/useConnectionLink'
 
-const { setConnectionLink, connectionLink } = useConnectionLink()
+// const { setConnectionLink, connectionLink } = useConnectionLink()
 
 const emailRef = ref<string | null>(null)
 const inputRef = ref<HTMLElement | null>(null)
@@ -53,7 +48,7 @@ const checkEmail = (e) => {
   }
 }
 
-const fetchData = async (e: Event) => {
+const fetchData = async () => {
   try {
     const res = await fetch('http://localhost:5050/user/register', {
       method: 'POST',
@@ -64,29 +59,13 @@ const fetchData = async (e: Event) => {
     })
     const data = await res.json()
 
-    setConnectionLink(data?.details.linkJwt)
-
-    console.log('LINK', connectionLink.value)
-
-    //   infoRef.value && (infoRef.value.style.display = 'block')
-    //   inputRef.value && (inputRef.value.style.borderColor = 'red')
-    // } else {
-    //   const router = createRouter({
-    //     history: createWebHistory(),
-    //     linkActiveClass: 'active',
-    //     routes: [
-    //       { path: '/', component: HomeView },
-    //       { path: '/auth/login', component: LoginView },
-    //     ],
-    //   })
-    //   router.push('/auth/login')
-    // }
+    // setConnectionLink(data?.details.linkJwt)
+    store.setLink(data?.details.linkJwt)
+    console.log('LINK: ', store.link)
   } catch (error) {
     console.error(error)
   }
 }
-
-onMounted(() => {})
 </script>
 
 <style lang="scss" scoped>
@@ -136,6 +115,7 @@ onMounted(() => {})
       font-size: 1.6rem;
       font-weight: normal;
       line-height: 1.2;
+      margin-bottom: 1rem;
     }
   }
 
@@ -143,6 +123,7 @@ onMounted(() => {})
     position: relative;
     display: block;
     width: 100%;
+    margin-bottom: 4rem;
 
     &_input {
       display: block;
