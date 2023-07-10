@@ -40,7 +40,6 @@ const toasterIcon = {
 const iconUrl = `${toasterIcon[props.name].url}`
 const iconAlt = `${toasterIcon[props.name].alt}`
 
-// console.log(iconUrl)
 </script>
 <style scope lang="scss">
 .toaster-container {
