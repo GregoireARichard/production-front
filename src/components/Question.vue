@@ -1,28 +1,57 @@
 <template #main>
   <main class="main">
     <div class="score_container">
-      <p class="score">{{ props.user_points }}/{{ props.total_point }}</p>
+      <p class="score">{{ user_points }}/{{ total_point }}</p>
     </div>
     <div class="block">
       <div class="head">
-        <h4 class="head_title">{{ props.name }}</h4>
-        <p class="head_text">{{ props.description }}</p>
-        <Toasters name="clue">{{ props.clue }}</Toasters>
-        <p>Point de la question: {{ props.exercise_points }}</p>
+        <h4 class="head_title">{{ name }}</h4>
+        <p class="head_text">{{ description }}</p>
+        <Toasters name="clue">{{ clue }}</Toasters>
+        <p>Point de la question: {{ exercise_points }}</p>
       </div>
       <Button>Tester la connexion</Button>
     </div>
   </main>
 </template>
-<script setup lang="ts">
-interface Props {
-  responseArray?: ['response', 'index']
-}
 
-const props = withDefaults(defineProps<Props>(), {
-  responseArray: ['test', 1],
+<script setup lang="ts">
+const props = defineProps({
+  next: {
+    type: Boolean,
+    required: true,
+  },
+  error: {
+    type: Object,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  clue: {
+    type: String,
+    required: true,
+  },
+  user_points: {
+    type: Number,
+    required: true,
+  },
+  exercise_points: {
+    type: Number,
+    required: true,
+  },
+  total_point: {
+    type: Number,
+    required: true,
+  },
 })
 </script>
+
 <style scoped lang="scss">
 .main {
   position: relative;
