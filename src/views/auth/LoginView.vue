@@ -1,26 +1,33 @@
 <template>
   <Layout>
     <template #main>
-      <main class="main">Authentification en cours...</main>
+      <main class="main">
+        <Button class="button">Commencer le challenge</Button>
+        {{ store.link }}
+      </main>
     </template>
   </Layout>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import useConnectionLink from '@/composables/useConnectionLink'
+// import useConnectionLink from '@/composables/useConnectionLink'
+import { store } from '@/composables/useConnectionLink'
+import useToken from '@/composables/useToken'
 
-const { connectionLink } = useConnectionLink()
+const { setToken, token } = useToken()
+// const { connectionLink } = useConnectionLink()
 
-const dataRef = ref<string | null>(null)
-
-const fetchAPI = () => {
-  const link = connectionLink.value
-  console.log(connectionLink)
+const fetchAPI = async () => {
+  // const fetchLink = connectionLink.value
+  console.log('LINK:', store.link)
 
   // try {
-  //   const res = await fetch('http://localhost:5050/user/register')
+  //   const res = await fetch(fetchLink)
   //   const data = await res.json()
+
+  //   setToken(data?.access)
+  //   console.log('TOKEN:', token.value)
   // } catch (error) {
   //   console.error(error)
   // }
@@ -31,4 +38,12 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 6rem);
+}
+</style>
