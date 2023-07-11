@@ -9,10 +9,11 @@
             <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
-            <Input type="email" placeholder="Email" class="form_input" @input="checkEmail" ref="inputRef" required />
+            <Input type="text" placeholder="Full name" class="form_input" @input="takeFullName" required />
+            <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData"> Envoyer le mail </Button>
+          <Button @click="fetchData" :dataIsActive="true"> Envoyer le mail </Button>
         </div>
       </main>
     </template>
@@ -21,31 +22,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-// import useConnectionLink from '@/composables/useConnectionLink'
-import { store } from '@/composables/useConnectionLink'
-
-// const { setConnectionLink, connectionLink } = useConnectionLink()
 
 const emailRef = ref<string | null>(null)
-const inputRef = ref<HTMLElement | null>(null)
+const fullNameRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
-const error = ref<boolean>(false)
 
-const checkEmail = (e) => {
-  const regexEmail = /\S+@\S+\.\S+/
-
+const takeEmail = (e) => {
   emailRef.value = e.target.value
+}
 
-  if (e.target.value.search(regexEmail) === 0) {
-    if (inputRef.value) {
-      inputRef.value.style.borderColor = 'black'
-    }
-  } else if (e.target.value.search(regexEmail) === -1) {
-    if (inputRef.value) {
-      error.value = true
-      inputRef.value.style.borderColor = 'red'
-    }
-  }
+const takeFullName = (e) => {
+  fullNameRef.value = e.target.value
 }
 
 const fetchData = async () => {
@@ -55,13 +42,13 @@ const fetchData = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: emailRef?.value }),
+      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value }),
     })
     const data = await res.json()
 
-    // setConnectionLink(data?.details.linkJwt)
-    store.setLink(data?.details.linkJwt)
-    console.log('LINK: ', store.link)
+    console.log(data)
+
+    localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
   } catch (error) {
     console.error(error)
   }
@@ -125,33 +112,6 @@ const fetchData = async () => {
     width: 100%;
     margin-bottom: 4rem;
 
-    &_input {
-      display: block;
-      font-size: 1.6rem;
-      font-weight: medium;
-      width: 52rem;
-      height: 5rem;
-      padding: 0 2.5rem;
-      margin-bottom: 1.5rem;
-      border-radius: 5rem;
-      border: 1px solid #000;
-      background-color: #9483ac;
-
-      &::placeholder {
-        color: #000;
-      }
-    }
-
-    &_icon {
-      /* display: none; */
-      position: absolute;
-      top: 50%;
-      right: 2.5rem;
-      transform: translate(-50%, -50%);
-      font-size: 2.5rem;
-      color: #000;
-    }
-
     &_info {
       display: none;
       font-size: 1.4rem;
@@ -162,3 +122,20 @@ const fetchData = async () => {
   }
 }
 </style>
+
+<!-- // const checkEmail = (e) => {
+  //   const regexEmail = /\S+@\S+\.\S+/
+  
+  //   emailRef.value = e.target.value
+  
+  //   if (e.target.value.search(regexEmail) === 0) {
+  //     if (inputRef.value) {
+  //       inputRef.value.style.borderColor = 'black'
+  //     }
+  //   } else if (e.target.value.search(regexEmail) === -1) {
+  //     if (inputRef.value) {
+  //       error.value = true
+  //       inputRef.value.style.borderColor = 'red'
+  //     }
+  //   }
+  // } -->

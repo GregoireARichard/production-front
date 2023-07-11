@@ -1,9 +1,8 @@
-export default function useToken() {
-  const token = ref('')
+import { reactive } from 'vue'
 
-  const setToken = (newValue) => {
-    token.value = newValue
-  }
-
-  return { token, setToken }
-}
+export const storeToken = reactive({
+  token: 'test',
+  setToken(value) {
+    return (this.token = value)
+  },
+})

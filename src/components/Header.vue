@@ -1,13 +1,19 @@
 <template>
   <header class="header">
     <div class="wrapper">
-      <h1>LE CHALLENGE 2024</h1>
+      <h1>LE CHALLENGE 2024 {{ storeToken.link }}</h1>
     </div>
   </header>
 </template>
 
 <script setup>
-//
+import { storeLink } from '@/composables/useConnectionLink'
+import { storeToken } from '@/composables/useToken'
+
+console.group('HEADER')
+console.log('LINK: ', JSON.parse(localStorage.getItem('magicLink')))
+console.log('TOKEN: ', localStorage.getItem('token'))
+console.groupEnd()
 </script>
 
 <style lang="scss" scoped>
