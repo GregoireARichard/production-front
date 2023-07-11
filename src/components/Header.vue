@@ -7,13 +7,10 @@
 </template>
 
 <script setup>
-import { storeLink } from '@/composables/useConnectionLink'
-import { storeToken } from '@/composables/useToken'
-
-console.group('HEADER')
-console.log('LINK: ', JSON.parse(localStorage.getItem('magicLink')))
-console.log('TOKEN: ', localStorage.getItem('token'))
-console.groupEnd()
+// console.group('HEADER')
+// console.log('LINK: ', JSON.parse(localStorage.getItem('magicLink')))
+// console.log('TOKEN: ', localStorage.getItem('token'))
+// console.groupEnd()
 </script>
 
 <style lang="scss" scoped>
