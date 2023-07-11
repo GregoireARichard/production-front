@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   name: 'valid',
 })
 
-const iconPath = '../public/icons'
+const iconPath = '/icons'
 const toasterIcon = {
   valid: {
     url: iconPath + '/check.svg',
