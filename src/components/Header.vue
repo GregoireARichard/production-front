@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="wrapper">
-      <h1>LE CHALLENGE 2024 {{ storeToken.link }}</h1>
+      <h1>LE CHALLENGE 2024</h1>
     </div>
   </header>
 </template>
