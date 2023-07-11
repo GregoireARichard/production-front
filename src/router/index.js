@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/auth/LoginView.vue'
 import QuestionsView from '../views/challenge/QuestionsView.vue'
+import AdminView from '../views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/challenge/questions',
       name: 'questions',
       component: QuestionsView,
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
     },
     {
       path: '/:pathMatch(.*)*',

@@ -63,7 +63,7 @@ const fetchData = async () => {
   align-items: center;
   width: 100vw;
   min-height: 100vh;
-  padding: 10rem 40rem;
+  margin-top: 10rem;
 
   .block {
     position: relative;
