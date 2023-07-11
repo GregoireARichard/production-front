@@ -52,6 +52,8 @@ const iconAlt = `${toasterIcon[props.name].alt}`
   padding: 1rem;
   border-radius: 5px;
   width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   img {
     width: 20px;
     height: 20px;

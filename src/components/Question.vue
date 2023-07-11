@@ -1,8 +1,6 @@
-<template #main>
+<template>
   <main class="main">
-    <div class="score_container">
-      <p class="score">{{ user_points }}/{{ total_point }}</p>
-    </div>
+    <slot />
     <div class="block">
       <div class="head">
         <h4 class="head_title">{{ name }}</h4>
@@ -10,7 +8,13 @@
         <Toasters name="clue">{{ clue }}</Toasters>
         <p>Point de la question: {{ exercise_points }}</p>
       </div>
-      <Button>Tester la connexion</Button>
+      <Toasters v-if="error" name="error">
+        {{ error.title }}
+        {{ error.message }} <br />
+        Code d'erreur: {{ error.status_code }}
+      </Toasters>
+      <Button v-if="next === false">Tester la connexion</Button>
+      <Toasters v-if="next" name="valid">Exercice réussi !</Toasters>
     </div>
   </main>
 </template>
@@ -23,7 +27,7 @@ const props = defineProps({
   },
   error: {
     type: Object,
-    required: true,
+    required: false,
   },
   name: {
     type: String,
