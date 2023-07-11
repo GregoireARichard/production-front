@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     Hero: typeof import('./components/Hero/Hero.vue')['default']
     Input: typeof import('./components/Input.vue')['default']
     Layout: typeof import('./components/Layout.vue')['default']
+    Question: typeof import('./components/Question.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Toasters: typeof import('./components/Toasters.vue')['default']
