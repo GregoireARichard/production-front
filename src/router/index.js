@@ -12,10 +12,9 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/auth/login/:jwt',
+      path: '/auth/login',
       name: 'login',
-      component: LoginView,
-      props: (route) => ({ jwt: route.params.jwt }),
+      component: LoginView
     },
     {
       path: '/challenge/questions',
