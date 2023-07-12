@@ -15,10 +15,13 @@ import { onMounted } from 'vue'
 
 const fetchAPI = async () => {
   const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
+  console.log(fetchLink)
 
   try {
     const res = await fetch(fetchLink)
+    console.log(res)
     const data = await res.json()
+    console.log(data)
 
     localStorage.setItem('token', data.access)
   } catch (error) {
