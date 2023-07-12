@@ -26,11 +26,6 @@ const getQuestion = async () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-<<<<<<< Updated upstream
-=======
-      body: JSON.stringify({}),
-      // Autres options de la requête, par exemple le corps (body) de la requête
->>>>>>> Stashed changes
     })
     const data = await res.json()
 
