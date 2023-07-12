@@ -25,12 +25,12 @@ const emailRef = ref<string | null>(null)
 const passwordRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
 
-const takeEmail = (e) => {
-  emailRef.value = e.target.value
+const takeEmail = (e: Event) => {
+  emailRef.value = e.target?.value
 }
 
-const takePassword = (e) => {
-  passwordRef.value = e.target.value
+const takePassword = (e: Event) => {
+  passwordRef.value = e.target?.value
 }
 
 const postLogin = async () => {
@@ -46,10 +46,13 @@ const postLogin = async () => {
 
     console.log(data)
 
-    localStorage.setItem('isAdminConnected', JSON.stringify(true))
-    localStorage.setItem('tokenAdmin', JSON.stringify(data.jwt))
+    if (localStorage.getItem('isAdminConnected')) {
+      localStorage.removeItem('isAdminConnected')
+      localStorage.removeItem('tokenAdmin')
+    } else {
+      localStorage.setItem('isAdminConnected', JSON.stringify(true))
+      localStorage.setItem('tokenAdmin', JSON.stringify(data.jwt))
 
-    if (data.jwt) {
       window.location.href = '/admin/dashboard'
     }
   } catch (error) {
