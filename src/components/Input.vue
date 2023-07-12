@@ -10,6 +10,7 @@
   font-size: 1.6rem;
   font-weight: medium;
   width: 100%;
+  min-width: 53rem;
   height: 5rem;
   padding: 0 2.5rem;
   margin-bottom: 1rem;
