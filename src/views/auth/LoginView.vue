@@ -11,15 +11,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+
 // import router from '../../router';
+
+const jwt = ref('')
 
 const fetchAPI = async () => {
   // const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
   // console.log(fetchLink)
-  console.log(this.$route.params)
 
   try {
+    jwt.value = this.$route.params.jwt
+    console.log(jwt, jwt.value)
     const res = await fetch(fetchLink)
     console.log(res)
     const data = await res.json()
