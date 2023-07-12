@@ -15,6 +15,7 @@ const router = createRouter({
       path: '/auth/login/:jwt',
       name: 'login',
       component: LoginView,
+      props: true,
     },
     {
       path: '/challenge/questions',
