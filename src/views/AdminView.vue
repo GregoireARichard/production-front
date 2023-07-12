@@ -33,6 +33,7 @@ const takePassword = (e: Event) => {
   passwordRef.value = e.target?.value
 }
 
+/* --------- Data */
 const postLogin = async () => {
   try {
     const res = await fetch('https://rendu-back.gravity-zero.fr/admin/login', {

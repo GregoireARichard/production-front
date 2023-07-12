@@ -11,6 +11,16 @@
             <input type="checkbox" id="state" class="switch" @click="takeState" />
             <label for="state">Désactiver l'exercice</label>
           </div>
+          <table class="score exercises">
+            <tr class="score_head">
+              <th>Nom</th>
+              <th>Etat</th>
+            </tr>
+            <tr v-for="(item, index) in exerciseList" :key="index" class="score_body">
+              <td>{{ item.name }}</td>
+              <td>{{ item.is_active }}</td>
+            </tr>
+          </table>
           <Button @click="postExercise"> mettre à jour </Button>
           <table class="score">
             <tr class="score_head">
@@ -19,9 +29,10 @@
             </tr>
             <tr v-for="(item, index) in tableExercise" :key="index" class="score_body">
               <td>{{ item.full_name }}</td>
-              <td>{{ item.points }}</td>
+              <td>{{ item.points }} / 20</td>
             </tr>
           </table>
+          <Button @click="xlsx(configFile, settingsFile)"> Télécharger le fichier </Button>
         </div>
       </main>
     </template>
@@ -30,9 +41,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import xlsx from 'json-as-xlsx'
 
 const exerciseRef = ref<string | null>(null)
 const stateRef = ref<boolean | null>(null)
+const exerciseList = ref<string[]>([])
 
 const takeExerciseName = (e: Event) => {
   exerciseRef.value = e.target?.value
@@ -42,51 +55,29 @@ const takeState = (e: Event) => {
   stateRef.value = e.target?.checked
 }
 
+/* --------- Data */
 const tableExercise = [
   {
     full_name: 'Amine',
-    points: '17/20',
+    points: '17',
   },
   {
     full_name: 'Amine',
-    points: '13/20',
+    points: '13',
   },
   {
     full_name: 'Amine',
-    points: '15/20',
+    points: '15',
   },
   {
     full_name: 'Amine',
-    points: '04/20',
+    points: '04',
   },
   {
     full_name: 'Amine',
-    points: '07/20',
+    points: '07',
   },
 ]
-
-const getResults = async () => {
-  const url = import.meta.env.VITE_BACK_URL
-  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin'))
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
-
-  if (isAdminConnected) {
-    try {
-      const res = await fetch(`${url}/admin/results`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      })
-      const data = await res.json()
-
-      console.log(data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-}
 
 const postExercise = async () => {
   const url = import.meta.env.VITE_BACK_URL
@@ -105,6 +96,8 @@ const postExercise = async () => {
       })
       const data = await res.json()
 
+      // getExerciseList()
+
       console.log(data)
     } catch (error) {
       console.error(error)
@@ -112,8 +105,79 @@ const postExercise = async () => {
   }
 }
 
+const getResults = async () => {
+  const url = import.meta.env.VITE_BACK_URL
+  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin'))
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+
+  if (isAdminConnected) {
+    try {
+      const res = await fetch(`${url}/admin/results`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await res.json()
+
+      // const resultTable = data[0].results
+
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
+
+const getExerciseList = async () => {
+  const url = import.meta.env.VITE_BACK_URL
+  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin'))
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+
+  if (isAdminConnected) {
+    try {
+      const res = await fetch(`${url}/admin/exercise_list`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await res.json()
+
+      exerciseList.value = data
+
+      console.log(data)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+}
+
+/* --------- Configuration du fichier */
+let settingsFile = {
+  fileName: 'Résultats des élèves',
+  extraLength: 3,
+  writeMode: 'writeFile',
+  writeOptions: {},
+  RTL: false,
+}
+
+const configFile = [
+  {
+    sheet: 'Tableau des scores',
+    columns: [
+      { label: 'Nom', value: 'full_name' },
+      { label: 'Points', value: 'points' },
+    ],
+    content: tableExercise,
+  },
+]
+
 onMounted(() => {
   getResults()
+  getExerciseList()
 })
 </script>
 
@@ -175,7 +239,7 @@ onMounted(() => {
   .option {
     display: flex;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
   }
 
   @supports (-webkit-appearance: none) or (-moz-appearance: none) {
@@ -289,7 +353,12 @@ onMounted(() => {
     padding: 2.5rem;
     border-radius: 1.3rem;
     background-color: #603b96;
-    margin-top: 3rem;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+
+    &.exercises {
+      margin-top: 0;
+    }
 
     &_head {
       position: relative;
@@ -313,6 +382,7 @@ onMounted(() => {
       width: 100%;
       padding: 1.4rem 0;
       border-bottom: 1px solid #2c1351a9;
+      text-wrap: nowrap;
 
       &:last-child {
         border: none;

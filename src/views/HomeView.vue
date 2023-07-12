@@ -13,7 +13,7 @@
             <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData" :dataIsActive="true"> Envoyer le mail </Button>
+          <Button @click="fetchData"> Envoyer le mail </Button>
           <p v-if="isSend">Email envoyé !</p>
         </div>
       </main>
