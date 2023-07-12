@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: '/auth/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/challenge/questions',

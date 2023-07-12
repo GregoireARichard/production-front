@@ -1,52 +1,65 @@
 <template>
   <Layout>
     <template #main>
-      <Question class="question" v-bind="api_response[0]">
-        <div class="score_container">
-          <p class="score">{{ api_response.user_points }}/{{ api_response[0].total_point }}</p>
-        </div>
-      </Question>
-      <Question v-if="api_response[0].next === true" class="question" v-bind="api_response[1]"></Question>
-      <Question v-if="api_response[1].next === true" class="question" v-bind="api_response[2]"></Question>
+      <div v-if="data" class="main_container">
+        <QuestionPassed v-if="data.passed" v-bind="data.passed.exercises[0]"></QuestionPassed>
+        <Question class="question" v-bind="data">
+          <div class="score_container">
+            <p class="score">{{ data.user_points }}/{{ data.total_point }}</p>
+          </div>
+        </Question>
+        <Button class="connexion_button" @click="fetchData">Tester la connexion</Button>
+      </div>
+
+      <div v-else>
+        <p>chargement...</p>
+      </div>
     </template>
   </Layout>
 </template>
 
 <script setup>
-const api_response = [
-  {
-    next: false,
-    error: {
-      title: "Le fichier 'toto' n'existe pas",
-      message: "impossible d'accéder au fichier",
-      status_code: 404,
-    },
-    name: '4eme Exercice',
-    description:
-      'Vous devez créer un fichier toto à la racine de votre utilisateur avec les droits en lecture/écriture uniquement pour le groupe toto-production',
-    clue: "Pensez bien à ajouter l'utilisateur fourni au groupe toto-production",
-    user_points: 10,
-    exercise_points: 5,
-    total_point: 20,
-  },
-  {
-    next: false,
-    error: {
-      title: "Le fichier 'toto' n'existe pas",
-      message: "impossible d'accéder au fichier",
-      status_code: 404,
-    },
-    name: '5eme Exercice',
-    description:
-      'Vous devez créer un fichier toto à la racine de votre utilisateur avec les droits en lecture/écriture uniquement pour le groupe toto-production',
-    clue: "Pensez bien à ajouter l'utilisateur fourni au groupe toto-production",
-    user_points: 10,
-    exercise_points: 5,
-    total_point: 20,
-  },
-]
+import { ref, onMounted } from 'vue'
 
-const user_score = api_response[0].user_points
+const fetchData = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    console.log(token)
+    const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: 'ssh',
+        group_id: 1,
+        test: {
+          host: '193.70.84.157',
+          username: 'ubuntu',
+          port: 22,
+        },
+      }),
+      // Autres options de la requête, par exemple le corps (body) de la requête
+    })
+    const data = await res.json()
+    return data
+    console.log(data)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const data = ref(null)
+
+onMounted(async () => {
+  // Utilisez onMounted pour appeler fetchData après le chargement du composant
+  data.value = await fetchData() // Mettez à jour la référence réactive avec les données récupérées
+})
+
+console.log(data.value)
+
+const user_score = data.user_points
 </script>
 
 <style scoped lang="scss">
@@ -58,5 +71,21 @@ const user_score = api_response[0].user_points
 
 .question {
   margin-bottom: 1rem;
+}
+
+.score_container {
+  margin-bottom: 1rem;
+  .score {
+    font-size: large;
+    font-weight: bold;
+  }
+}
+
+.main_container {
+  display: block;
+  justify-items: center;
+  .connexion_button {
+    justify-items: center;
+  }
 }
 </style>
