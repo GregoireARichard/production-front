@@ -16,16 +16,6 @@ import { ref, onMounted } from 'vue'
 
 const questionData = ref<string[]>([])
 
-const passedData = {
-  question_number: 1,
-  name: 'SSH',
-  description:
-    "Merci de me donner l'accès à votre serveur avec la clé suivante et de me fournir les informations de connexion associé:<br><code>Clé publique RSA</code>",
-  clue: 'Le fichier où doit être copié la clé publique est le suivant: <code>/home/<votre_utilisateur>/.ssh/authorized_keys</code>',
-  points: 2,
-  group_id: 1,
-}
-
 const getQuestion = async () => {
   const token = localStorage.getItem('token')
 
@@ -36,15 +26,6 @@ const getQuestion = async () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        name: 'ssh',
-        group_id: 1,
-        test: {
-          host: '193.70.84.157',
-          username: 'ubuntu',
-          port: 22,
-        },
-      }),
     })
     const data = await res.json()
 

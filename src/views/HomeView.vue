@@ -45,7 +45,7 @@ const fetchData = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value }),
+      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value, group_id: 1 }),
     })
     const data = await res.json()
 

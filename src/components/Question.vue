@@ -1,5 +1,10 @@
 <template>
   <div class="head">
+    <Toasters v-if="error" name="error" class="error">
+      {{ error.title }}
+      {{ error.message }} <br />
+      Code d'erreur: {{ error.status_code }}
+    </Toasters>
     <div class="head_title">
       <h4>Question 1: SSH</h4>
       <p>{{ user_points }}/{{ total_point }}</p>
@@ -10,16 +15,8 @@
     </Toasters>
     <p>Points de la question: {{ exercise_points }}</p>
   </div>
-  <Toasters v-if="error" name="error">
-    {{ error.title }}
-    {{ error.message }} <br />
-    Code d'erreur: {{ error.status_code }}
-  </Toasters>
-  <form class="form">
-    <Input type="text" placeholder="Host" class="form_input" @input="takeHost" required />
-    <Input type="text" placeholder="Username" class="form_input" @input="takeUsername" required />
-    <Input type="text" placeholder="Port" class="form_input" @input="takePort" required />
-  </form>
+  <FormSSH v-model:host="takeHost" v-model:username="takeUsername" v-model:port="takePort"></FormSSH>
+
   <Button class="connexion_button" @click="fetchSSH">Tester la connexion</Button>
 </template>
 
@@ -59,6 +56,18 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  host: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  port: {
+    type: String,
+    required: true,
+  },
 })
 
 const hostRef = ref<HTMLElement | null>(null)
@@ -68,6 +77,8 @@ const portRef = ref<HTMLElement | null>(null)
 const takeHost = (e: Event) => {
   hostRef.value = e.target?.value
 }
+
+console.log(hostRef.value)
 
 const takeUsername = (e: Event) => {
   usernameRef.value = e.target?.value
@@ -89,7 +100,6 @@ const fetchSSH = async () => {
       },
       body: JSON.stringify({
         name: 'ssh',
-        group_id: 1,
         test: {
           host: hostRef.value,
           username: usernameRef.value,
@@ -143,6 +153,9 @@ const fetchSSH = async () => {
       font-weight: bold;
       color: #000;
     }
+    .error {
+      margin-bottom: 1rem;
+    }
   }
 
   &_text {
@@ -152,21 +165,6 @@ const fetchSSH = async () => {
     width: 100%;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
-  }
-}
-
-.form {
-  position: relative;
-  display: block;
-  width: 100%;
-  margin-bottom: 4rem;
-
-  &_info {
-    display: none;
-    font-size: 1.4rem;
-    font-weight: normal;
-    color: #000;
-    padding-left: 2.5rem;
   }
 }
 </style>

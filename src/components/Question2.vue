@@ -96,7 +96,7 @@ const fetchSGBDR = async () => {
       },
       body: JSON.stringify({
         name: 'sgbdr',
-        group_id: 1,
+
         test: {
           host: hostRef.value,
           username: usernameRef.value,
