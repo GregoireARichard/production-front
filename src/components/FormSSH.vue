@@ -1,27 +1,30 @@
 <template>
   <form class="form">
-    <Input type="text" placeholder="Host" class="form_input" @input="props.host" required />
-    <Input type="text" placeholder="Username" class="form_input" @input="props.username" required />
-    <Input type="text" placeholder="Port" class="form_input" @input="props.port" required />
+    <Input type="text" placeholder="Host" class="form_input" @input="getHost" required />
+    <Input type="text" placeholder="Username" class="form_input" @input="getUsername" required />
+    <Input type="number" placeholder="Port" class="form_input" @input="getPort" required />
+    <Button class="connexion_button" type="button" @click="$emit('test-connection', {host:host, username:username, port:port});">Tester la connexion</Button>
   </form>
 </template>
 <script setup lang="ts">
-const props = defineProps({
-  host: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  port: {
-    type: Number,
-    required: true,
-  },
-})
+import { ref } from 'vue';
 
-console.log(props.host.value)
+const host = ref<HTMLElement | null>(null)
+const username = ref<HTMLElement | null>(null)
+const port = ref<HTMLElement | null>(null)
+
+const getHost = (e) => {
+  host.value = e.target.value
+}
+
+const getUsername = (e) => {
+  username.value = e.target.value
+}
+
+const getPort = (e) => {
+  port.value = e.target.value
+}
+
 </script>
 <style scoped lang="scss">
 .form {

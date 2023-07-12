@@ -1,36 +1,37 @@
 <template>
   <form class="form">
-    <Input type="text" placeholder="Host" class="form_input" @input="props.host" required />
-    <Input type="text" placeholder="Username" class="form_input" @input="props.username" required />
-    <Input type="text" placeholder="Port" class="form_input" @input="props.port" required />
+    <Input type="text" placeholder="Host" class="form_input" @input="getHost" required />
+    <Input type="text" placeholder="Username" class="form_input" @input="getUsername" required />
+    <Input type="password" placeholder="password" class="form_input" @input="getPassword" required />
+    <Input type="number" placeholder="Port" class="form_input" @input="getPort" required />
+    <Button class="connexion_button" type="button" @click="$emit('test-connection', {host:host, username:username, password:password, port:port});">Tester la connexion</Button>
   </form>
 </template>
 <script setup lang="ts">
-const props = defineProps({
-  host: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  port: {
-    type: Number,
-    required: true,
-  },
-})
-const hostInput = (event) => {
-  defineEmits(['update:host', event.target.value])
+import { ref } from 'vue';
+
+
+const host = ref<HTMLElement | null>(null)
+const username = ref<HTMLElement | null>(null)
+const password = ref<HTMLElement | null>(null)
+const port = ref<HTMLElement | null>(null)
+
+const getHost = (e) => {
+  host.value = e.target.value
 }
 
-const usernameInput = (event) => {
-  defineEmits(['update:username', event.target.value])
+const getUsername = (e) => {
+  username.value = e.target.value
 }
 
-const portInput = (event) => {
-  defineEmits(['update:port', event.target.value])
+const getPassword = (e) => {
+  password.value = e.target.value
 }
+
+const getPort = (e) => {
+  port.value = e.target.value
+}
+
 </script>
 <style scoped lang="scss">
 .form {

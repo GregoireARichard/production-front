@@ -49,6 +49,7 @@ const fetchData = async () => {
     })
     const data = await res.json()
 
+    //if(data.status > )
     console.log(data)
 
     localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))

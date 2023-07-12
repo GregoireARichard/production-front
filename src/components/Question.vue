@@ -15,13 +15,23 @@
     </Toasters>
     <p>Points de la question: {{ exercise_points }}</p>
   </div>
-  <FormSSH v-model:host="takeHost" v-model:username="takeUsername" v-model:port="takePort"></FormSSH>
+  <template v-if="isFirst">
+    <FormSSH
+      @test-connection="fetchSSH"
+    ></FormSSH>
+  </template>
 
-  <Button class="connexion_button" @click="fetchSSH">Tester la connexion</Button>
+  <template v-if="isSecond">
+    <FormSGBDR
+      @test-connection="fetchSSH"
+    ></FormSGBDR>
+  </template>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+
+let isFirst = true;
+let isSecond = false;
 
 const props = defineProps({
   clue: {
@@ -55,40 +65,30 @@ const props = defineProps({
   user_points: {
     type: Number,
     required: true,
-  },
-  host: {
-    type: String,
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  port: {
-    type: String,
-    required: true,
-  },
+  }
 })
 
-const hostRef = ref<HTMLElement | null>(null)
-const usernameRef = ref<HTMLElement | null>(null)
-const portRef = ref<HTMLElement | null>(null)
+// const host = ref('')
+// const username = ref('')
+// const port = ref('')
 
-const takeHost = (e: Event) => {
-  hostRef.value = e.target?.value
-}
+// const takeHost = (e: Event) => {
+//   host.value = (e.target as HTMLInputElement).value
+// }
 
-console.log(hostRef.value)
+// const takeUsername = (e: Event) => {
+//   username.value = (e.target as HTMLInputElement).value
+// }
 
-const takeUsername = (e: Event) => {
-  usernameRef.value = e.target?.value
-}
+// const takePort = (e: Event) => {
+//   port.value = (e.target as HTMLInputElement).value
+// }
 
-const takePort = (e: Event) => {
-  portRef.value = e.target?.value
-}
+// console.log(host.value, username.value, port.value);
 
-const fetchSSH = async () => {
+
+const fetchSSH = async (formData) => {
+
   const token = localStorage.getItem('token')
 
   try {
@@ -100,16 +100,20 @@ const fetchSSH = async () => {
       },
       body: JSON.stringify({
         name: 'ssh',
-        test: {
-          host: hostRef.value,
-          username: usernameRef.value,
-          port: portRef.value,
-        },
+        test: formData,
       }),
     })
-    const data = await res.json()
 
-    console.log(data)
+    if(res.status === 200)
+    {
+      const data = await res.json()
+      
+      isFirst = false;
+      isSecond = true;
+
+      emit('data-to-parent', data);
+    }
+
   } catch (error) {
     console.error(error)
   }
