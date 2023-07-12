@@ -12,10 +12,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-const props = defineProps(['jwt']) // Définir les props
+const route = useRoute() // Obtenir l'objet route
 
-const jwt = ref(props.jwt)
+const jwt = ref(route.params.jwt) // Utiliser route.params.jwt pour récupérer le JWT
 
 export { jwt } // Exposer la référence réactive
 
