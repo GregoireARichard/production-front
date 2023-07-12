@@ -16,7 +16,7 @@ const router = createRouter({
     {
       path: '/auth/login',
       name: 'login',
-      component: LoginView,
+      component: LoginView
     },
     {
       path: '/challenge/questions',
@@ -39,6 +39,11 @@ const router = createRouter({
       component: () => import('../views/NotFoundView.vue'),
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating to: ${to.name}`)
+  next()
 })
 
 export default router

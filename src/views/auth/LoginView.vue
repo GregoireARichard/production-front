@@ -11,14 +11,29 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const dynamic_jwt = ref(route.query.jwt);
+
 
 const fetchAPI = async () => {
-  const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
-
   try {
-    const res = await fetch(fetchLink)
+    const url = "https://rendu-back.gravity-zero.fr/auth/login?"+dynamic_jwt.value;
+    console.log(url, dynamic_jwt);
+    
+    const res = await fetch(url)
+
+    if (!res.ok) {
+      const message = `An error has occured: ${res.status}`;
+      throw new Error(message);
+    }
+
+    console.log(res, res.json())
     const data = await res.json()
+    console.log(data)
 
     localStorage.setItem('token', data.access)
   } catch (error) {

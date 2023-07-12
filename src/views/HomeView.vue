@@ -13,7 +13,8 @@
             <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData"> Envoyer le mail </Button>
+          <Button @click="fetchData" :dataIsActive="true"> Envoyer le mail </Button>
+          <p v-if="isSend">Email envoyé !</p>
         </div>
       </main>
     </template>
@@ -35,9 +36,11 @@ const takeFullName = (e) => {
   fullNameRef.value = e.target.value
 }
 
+let isSend = false
+
 const fetchData = async () => {
   try {
-    const res = await fetch('http://localhost:5050/user/register', {
+    const res = await fetch('https://rendu-back.gravity-zero.fr/user/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,6 +55,7 @@ const fetchData = async () => {
   } catch (error) {
     console.error(error)
   }
+  isSend = true
 }
 </script>
 
