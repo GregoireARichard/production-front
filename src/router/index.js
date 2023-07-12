@@ -12,12 +12,12 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/auth/login',
+      path: '/auth/login:jwt',
       name: 'login',
       component: LoginView,
     },
     {
-      path: '/challenge/questions:jwt',
+      path: '/challenge/questions',
       name: 'questions',
       component: QuestionsView,
     },
