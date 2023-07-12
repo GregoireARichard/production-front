@@ -2,13 +2,16 @@
   <Layout>
     <template #main>
       <div v-if="data" class="main_container">
-        <QuestionPassed v-if="data.passed" v-bind="data.passed.exercises[0]"></QuestionPassed>
-        <Question class="question" v-bind="data">
-          <div class="score_container">
-            <p class="score">{{ data.user_points }}/{{ data.total_point }}</p>
+        <main class="main">
+          <div class="block">
+            <!-- <QuestionPassed v-if="data.passed" v-bind="data.name"></QuestionPassed> -->
+            <Question class="question">
+              <div class="score_container">
+                <p class="score">{{ data.user_points }}/{{ data.total_point }}</p>
+              </div>
+            </Question>
           </div>
-        </Question>
-        <Button class="connexion_button" @click="fetchData">Tester la connexion</Button>
+        </main>
       </div>
 
       <div v-else>
@@ -86,6 +89,22 @@ const user_score = data.user_points
   justify-items: center;
   .connexion_button {
     justify-items: center;
+  }
+}
+
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 5rem 20rem;
+  .block {
+    position: relative;
+    padding: 5rem;
+    border-radius: 2rem;
+    background-color: #ccb4f0;
   }
 }
 </style>
