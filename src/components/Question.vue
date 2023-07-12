@@ -1,71 +1,86 @@
 <template>
   <div class="head">
-    <h4 class="head_title">{{ dataRef.name }}</h4>
-    <p class="head_text">{{ dataRef.description }}</p>
-    <Toasters name="clue"><p v-html="dataRef.clue"></p></Toasters>
-    <p>Points de la question: {{ dataRef.exercise_points }}</p>
+    <div class="head_title">
+      <h4>Question 1: SSH</h4>
+      <p>{{ user_points }}/{{ total_point }}</p>
+    </div>
+    <p class="head_text">{{ description }}</p>
+    <Toasters name="clue">
+      <p>{{ clue }}</p>
+    </Toasters>
+    <p>Points de la question: {{ exercise_points }}</p>
   </div>
-  <Toasters v-if="dataRef.error" name="error">
-    {{ dataRef.error.title }}
-    {{ dataRef.error.message }} <br />
+  <Toasters v-if="error" name="error">
+    {{ error.title }}
+    {{ error.message }} <br />
     Code d'erreur: {{ error.status_code }}
   </Toasters>
-  <Button class="connexion_button" @click="currentFetch">Tester la connexion</Button>
+  <form class="form">
+    <Input type="text" placeholder="Host" class="form_input" @input="takeHost" required />
+    <Input type="text" placeholder="Username" class="form_input" @input="takeUsername" required />
+    <Input type="text" placeholder="Port" class="form_input" @input="takePort" required />
+  </form>
+  <Button class="connexion_button" @click="fetchSSH">Tester la connexion</Button>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-
-const dataRef = ref([])
-
-interface Props {
-  name?: keyof typeof fetchList
-}
-
-const fetchList = {
-  SSH: 'fetchSSH',
-  SGBDR: 'fetchSGBDR',
-  'SSH Error': 'fetchSSHError',
-}
+import { ref } from 'vue'
 
 const props = defineProps({
-  // error: {
-  //   type: Object,
-  //   required: false,
-  // },
+  clue: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  error: {
+    type: Object,
+    required: true,
+  },
+  exercise_points: {
+    type: Number,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
   },
-  // description: {
-  //   type: String,
-  //   required: true,
-  // },
-  // clue: {
-  //   type: String,
-  //   required: true,
-  // },
-  // user_points: {
-  //   type: Number,
-  //   required: true,
-  // },
-  // exercise_points: {
-  //   type: Number,
-  //   required: true,
-  // },
-  // total_point: {
-  //   type: Number,
-  //   required: true,
-  // },
+  passed: {
+    type: Boolean,
+    required: true,
+  },
+  total_point: {
+    type: Number,
+    required: true,
+  },
+  user_points: {
+    type: Number,
+    required: true,
+  },
 })
 
-const currentFetch = computed(() => {
-  return `fetchList.${props.name}`
-})
+const hostRef = ref<HTMLElement | null>(null)
+const usernameRef = ref<HTMLElement | null>(null)
+const portRef = ref<HTMLElement | null>(null)
+
+const takeHost = (e: Event) => {
+  hostRef.value = e.target?.value
+}
+
+const takeUsername = (e: Event) => {
+  usernameRef.value = e.target?.value
+}
+
+const takePort = (e: Event) => {
+  portRef.value = e.target?.value
+}
 
 const fetchSSH = async () => {
+  const token = localStorage.getItem('token')
+
   try {
-    const token = localStorage.getItem('token')
     const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
       method: 'POST',
       headers: {
@@ -76,42 +91,38 @@ const fetchSSH = async () => {
         name: 'ssh',
         group_id: 1,
         test: {
-          host: '193.70.84.157',
-          username: 'ubuntu',
-          port: 22,
+          host: hostRef.value,
+          username: usernameRef.value,
+          port: portRef.value,
         },
       }),
-      // Autres options de la requête, par exemple le corps (body) de la requête
     })
-    const dataSSH = await res.json()
-    console.log(dataSSH)
-    return (dataRef.value = dataSSH)
+    const data = await res.json()
+
+    console.log(data)
   } catch (error) {
     console.error(error)
   }
 }
-
-console.log(dataRef.value)
-
-onMounted(() => {
-  // Utilisez onMounted pour appeler fetchData après le chargement du composant
-  fetchSSH() // Mettez à jour la référence réactive avec les données récupérées
-})
 </script>
 
 <style scoped lang="scss">
-.main {
-  .head {
-    position: relative;
-    width: 100%;
-    margin-bottom: 3rem;
+.head {
+  position: relative;
+  width: 100%;
+  margin-bottom: 3rem;
 
-    &_title {
+  &_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    h4 {
       position: relative;
       font-size: 1.6rem;
       font-weight: bold;
       text-transform: uppercase;
-      margin-bottom: 2rem;
       margin-left: 1.4rem;
 
       &::before {
@@ -126,14 +137,46 @@ onMounted(() => {
         background-color: black;
       }
     }
-    &_text {
-      font-size: 1.6rem;
-      font-weight: normal;
-      line-height: 1.2;
-      width: 100%;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
+
+    p {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
     }
+  }
+
+  &_text {
+    font-size: 1.6rem;
+    font-weight: normal;
+    line-height: 1.2;
+    width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
+.form {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-bottom: 4rem;
+
+  &_info {
+    display: none;
+    font-size: 1.4rem;
+    font-weight: normal;
+    color: #000;
+    padding-left: 2.5rem;
   }
 }
 </style>
+
+<!-- const fetchList = {
+  SSH: 'fetchSSH',
+  SGBDR: 'fetchSGBDR',
+  SSHError: 'fetchSSHError',
+}
+
+const currentFetch = computed(() => {
+  return `fetchList.${props.name}`
+}) -->

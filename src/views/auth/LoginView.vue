@@ -19,23 +19,18 @@ const route = useRoute()
 const dynamic_jwt = ref(route.query.jwt)
 
 const fetchAPI = async () => {
-  try {
-    const url = 'https://rendu-back.gravity-zero.fr/auth/login?jwt=' + dynamic_jwt.value
-    console.log(url, dynamic_jwt)
+  const url = 'https://rendu-back.gravity-zero.fr/auth/login?jwt=' + dynamic_jwt.value
 
+  try {
     const res = await fetch(url)
+    const data = await res.json()
+
+    localStorage.setItem('token', data.access)
 
     if (!res.ok) {
       const message = `An error has occured: ${res.status}`
       throw new Error(message)
     }
-
-    // console.log(res, res.json())
-    // console.log('test')
-    const data = await res.json()
-    console.log(data.access)
-
-    localStorage.setItem('token', data.access)
   } catch (error) {
     console.error(error)
   }
@@ -44,8 +39,6 @@ const fetchAPI = async () => {
 onMounted(() => {
   fetchAPI()
 })
-
-const test = localStorage.getItem('token')
 </script>
 
 <style lang="scss" scoped>

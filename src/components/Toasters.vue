@@ -59,6 +59,8 @@ const iconAlt = `${toasterIcon[props.name].alt}`
     height: 20px;
   }
   p {
+    font-size: 1.4rem;
+    font-weight: bold;
     margin-top: auto;
     margin-bottom: auto;
   }
