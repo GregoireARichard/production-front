@@ -12,10 +12,12 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
+// import router from '../../router';
 
 const fetchAPI = async () => {
-  const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
-  console.log(fetchLink)
+  // const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
+  // console.log(fetchLink)
+  console.log(this.$route.params)
 
   try {
     const res = await fetch(fetchLink)
