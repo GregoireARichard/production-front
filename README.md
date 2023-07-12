@@ -12,6 +12,8 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
+You have to setup .env variable that is equal to "VITE_BACK_URL"
+
 ```sh
 npm install
 ```
