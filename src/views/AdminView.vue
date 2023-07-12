@@ -4,17 +4,14 @@
       <main class="main">
         <div class="block">
           <div class="head">
-            <h4 class="head_title">Connectez-vous</h4>
-            <p class="head_text">Un email sera envoyé à l'adresse indiquée afin de vous identifier.</p>
-            <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
+            <h4 class="head_title">Connectez-vous (Admin)</h4>
           </div>
           <form action="" class="form">
-            <Input type="text" placeholder="Full name" class="form_input" @input="takeFullName" required />
             <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
+            <Input type="password" placeholder="Mot de passe" class="form_input" @input="takePassword" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
-          <Button @click="fetchData"> Envoyer le mail </Button>
-          <p v-if="isSend">Email envoyé !</p>
+          <Button @click="postLogin"> Connection </Button>
         </div>
       </main>
     </template>
@@ -25,37 +22,43 @@
 import { ref } from 'vue'
 
 const emailRef = ref<string | null>(null)
-const fullNameRef = ref<string | null>(null)
+const passwordRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
 
-const takeEmail = (e) => {
-  emailRef.value = e.target.value
+const takeEmail = (e: Event) => {
+  emailRef.value = e.target?.value
 }
 
-const takeFullName = (e) => {
-  fullNameRef.value = e.target.value
+const takePassword = (e: Event) => {
+  passwordRef.value = e.target?.value
 }
 
-let isSend = false
-
-const fetchData = async () => {
+/* --------- Data */
+const postLogin = async () => {
   try {
-    const res = await fetch('https://rendu-back.gravity-zero.fr/user/register', {
+    const res = await fetch('https://rendu-back.gravity-zero.fr/admin/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value }),
+      body: JSON.stringify({ email: emailRef?.value, password: passwordRef?.value }),
     })
     const data = await res.json()
 
     console.log(data)
 
-    localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
+    if (localStorage.getItem('isAdminConnected')) {
+      localStorage.removeItem('isAdminConnected')
+      localStorage.removeItem('tokenAdmin')
+    } else {
+      localStorage.setItem('isAdminConnected', JSON.stringify(true))
+      localStorage.setItem('tokenAdmin', JSON.stringify(data.jwt))
+
+      window.location.href = '/admin/dashboard'
+    }
   } catch (error) {
     console.error(error)
   }
-  isSend = true
 }
 </script>
 
@@ -126,20 +129,3 @@ const fetchData = async () => {
   }
 }
 </style>
-
-<!-- // const checkEmail = (e) => {
-  //   const regexEmail = /\S+@\S+\.\S+/
-  
-  //   emailRef.value = e.target.value
-  
-  //   if (e.target.value.search(regexEmail) === 0) {
-  //     if (inputRef.value) {
-  //       inputRef.value.style.borderColor = 'black'
-  //     }
-  //   } else if (e.target.value.search(regexEmail) === -1) {
-  //     if (inputRef.value) {
-  //       error.value = true
-  //       inputRef.value.style.borderColor = 'red'
-  //     }
-  //   }
-  // } -->
