@@ -17,7 +17,7 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      path: '/challenge/questions/:jwt',
+      path: '/challenge/questions:jwt',
       name: 'questions',
       component: QuestionsView,
     },
