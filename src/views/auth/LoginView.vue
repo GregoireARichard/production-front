@@ -14,21 +14,24 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-const route = useRoute() // Obtenir l'objet route
+const route = useRoute()
 
-const jwt = ref(route.params.jwt) // Utiliser route.params.jwt pour récupérer le JWT
+const dynamic_jwt = ref(route.query.jwt);
 
-export { jwt } // Exposer la référence réactive
-
-console.log(jwt, jwt.value)
 
 const fetchAPI = async () => {
-  // const fetchLink = JSON.parse(localStorage.getItem('magicLink'))
-  // console.log(fetchLink)
-
   try {
-    const res = await fetch(fetchLink)
-    console.log(res)
+    const url = "https://rendu-back.gravity-zero.fr/auth/login?"+dynamic_jwt.value;
+    console.log(url, dynamic_jwt);
+    
+    const res = await fetch(url)
+
+    if (!res.ok) {
+      const message = `An error has occured: ${res.status}`;
+      throw new Error(message);
+    }
+
+    console.log(res, res.json())
     const data = await res.json()
     console.log(data)
 
