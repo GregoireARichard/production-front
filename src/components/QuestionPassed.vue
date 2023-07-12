@@ -3,25 +3,19 @@
     <slot />
     <div class="block">
       <div class="head">
-        <h4 class="head_title">{{ name }}</h4>
+        <h4 class="head_title">{{ question_number }} {{ name }}</h4>
         <p class="head_text">{{ description }}</p>
-        <Toasters name="clue">{{ clue }}</Toasters>
-        <p>Points de la question: {{ exercise_points }}</p>
+        <p>Points de la question: {{ points }}</p>
       </div>
-      <Toasters v-if="error" name="error">
-        {{ error.title }}
-        {{ error.message }} <br />
-        Code d'erreur: {{ error.status_code }}
-      </Toasters>
+      <Toasters name="valid">Exercice réussi !</Toasters>
     </div>
   </main>
 </template>
-
 <script setup lang="ts">
 const props = defineProps({
-  error: {
-    type: Object,
-    required: false,
+  question_number: {
+    type: Number,
+    required: true,
   },
   name: {
     type: String,
@@ -35,21 +29,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  user_points: {
+  points: {
     type: Number,
     required: true,
   },
-  exercise_points: {
-    type: Number,
-    required: true,
-  },
-  total_point: {
+  group_id: {
     type: Number,
     required: true,
   },
 })
 </script>
-
 <style scoped lang="scss">
 .main {
   position: relative;
@@ -77,18 +66,6 @@ const props = defineProps({
       text-transform: uppercase;
       margin-bottom: 2rem;
       margin-left: 1.4rem;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: -1.4rem;
-        transform: translate(-50%, -50%);
-        width: 1rem;
-        height: 1rem;
-        border-radius: 50%;
-        background-color: black;
-      }
     }
     &_text {
       font-size: 1.6rem;
