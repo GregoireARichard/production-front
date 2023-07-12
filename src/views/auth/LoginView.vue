@@ -13,15 +13,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
-// import router from '../../router';
+const props = defineProps(['jwt']) // Définir les props
 
-const jwt = ref('')
+const jwt = ref(props.jwt)
 
-// Le paramètre "props" contiendra les paramètres de l'URL, y compris "jwt"
-const { jwt: routeJwt } = props
-
-// Affectez la valeur du paramètre "jwt" à la référence réactive
-jwt.value = routeJwt
+export { jwt } // Exposer la référence réactive
 
 console.log(jwt, jwt.value)
 
