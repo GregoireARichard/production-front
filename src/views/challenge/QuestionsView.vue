@@ -82,12 +82,18 @@ const fetchSSH = async (formData = null) => {
     if (res.status === 200) {
       const data = await res.json()
       props.name = data.name //text a minifier sinon ERREUR
-
+      props.description_textarea = ''
       for (const [key, value] of Object.entries(data)) {
         if(key === "description"){
-          const parts = value.split("<br><code>");
-          props[key] = parts[0]
-          props.description_textarea = parts[1].replace("</code>", "");
+          const codeStartIndex = value.indexOf("<code>");
+            if (codeStartIndex !== -1){
+              const parts = value.split("<br><code>");
+            
+              props[key] = parts[0]
+              props.description_textarea = parts[1].replace("</code>", "");
+            }else{
+              props[key] = value
+            }
         }else{
           props[key] = value
         }
@@ -95,7 +101,7 @@ const fetchSSH = async (formData = null) => {
         // console.log(`${key}: ${value}`)
       }
 
-      // console.log(props.clue)
+      console.log(props)
 
       // isFirst.value = false
       // isSecond.value = true
