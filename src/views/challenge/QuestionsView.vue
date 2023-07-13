@@ -1,6 +1,22 @@
 <template>
   <Layout>
     <template #main>
+      <div class="main-passed" v-for="exercise in props.exercise_passed" :key="exercise.question_number" v-if="props.passed">
+        <div class="block-passed">
+          <div class="head-passed">
+            <button class="more" @click="show">voir question</button>
+            <div class="head-passed_title">
+              
+              <h4>Question {{ exercise.question_number }}: {{ exercise.name }}</h4>
+            </div>
+            <p v-if="props.isVisible" class="head-passed_text">{{ exercise.description }}</p>
+            <p>Points de la question: {{ exercise.points }}</p>
+          </div>
+          <Toasters name="valid">
+            <span>Bravo, vous avez réussi la question</span>
+          </Toasters>
+        </div>
+      </div>
       <main class="main">
         <div class="block">
           <div class="head">
@@ -21,9 +37,8 @@
             <Toasters name="clue">
               <p>
                 {{ props.clue }}
-                <textarea v-if="props.clue_textarea.length > 0" rows="1" color="30">{{ props.clue_textarea }}</textarea>
+                <p class="clue_code" v-if="props.clue_textarea.length > 0">{{ props.clue_textarea }}</p>
               </p>
-              <div></div>
             </Toasters>
             <p>Points de la question: {{ props.exercise_points }}</p>
           </div>
@@ -57,7 +72,9 @@ const props = reactive({
   passed: false,
   total_point: 0,
   user_points: 0,
-  question_number: 1,
+  question_number: 0,
+  exercise_passed: [],
+  isVisible: false
 })
 
 const fetchSSH = async (formData = null) => {
@@ -85,7 +102,6 @@ const fetchSSH = async (formData = null) => {
 
     if (res.status === 200) {
       const data = await res.json()
-      props.question_number += 1
 
       props.name = data.name
       props.description_textarea = ''
@@ -119,6 +135,11 @@ const fetchSSH = async (formData = null) => {
           }
         }
       }
+      
+      if (data.passed){
+        props.passed = true
+        props.exercise_passed = data.passed.exercises        
+      }
     }
   } catch (error) {
     console.error(error)
@@ -128,6 +149,10 @@ const fetchSSH = async (formData = null) => {
 onMounted(() => {
   fetchSSH(null)
 })
+
+function show (){
+  props.isVisible = !props.isVisible
+}
 </script>
 
 <style scoped lang="scss">
@@ -196,5 +221,80 @@ onMounted(() => {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
+}
+
+.clue {
+  &_code{
+    display: inline;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background-color: white;
+    width: fit-content;
+    text-align: center;
+  }
+}
+
+.main-passed {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 5rem 20rem;
+
+
+  .block-passed{
+    position: relative;
+    padding: 5rem;
+    border-radius: 2rem;
+    background-color: #ccb4f0;
+  }
+
+  .head-passed {
+    position: relative;
+    width: 100%;
+    margin-bottom: 3rem;
+
+    &_title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+
+      h4 {
+      position: relative;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-left: 1.4rem;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -1.4rem;
+        transform: translate(-50%, -50%);
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background-color: black;
+      }
+    }
+
+    }
+
+  }
+  
+  &_text {
+    font-size: 1.6rem;
+      font-weight: normal;
+      line-height: 1.2;
+      max-width: 52rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+
+  }
+  
 }
 </style>
