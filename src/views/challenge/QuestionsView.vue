@@ -15,11 +15,11 @@
             </div>
             <p class="head_text">{{ props.description }}</p>
             <div v-if="props.description_textarea.length > 0">
-              <br>
-              <textarea rows="15" cols="100">{{ props.description_textarea}}</textarea>
+              <br />
+              <textarea rows="15" cols="100">{{ props.description_textarea }}</textarea>
             </div>
             <Toasters name="clue">
-              <p>{{ props.clue }}</p>
+              <p v-html="props.clue"></p>
             </Toasters>
             <p>Points de la question: {{ props.exercise_points }}</p>
           </div>
@@ -63,11 +63,10 @@ const fetchSSH = async (formData = null) => {
 
     if (formData) {
       body = JSON.stringify({
-        name: props.name.toLowerCase(), //Le text minifier doit être utilisé ici
+        name: props.name.toLowerCase(),
         test: formData,
       })
     }
-
 
     const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
       method: 'POST',
@@ -84,17 +83,17 @@ const fetchSSH = async (formData = null) => {
       props.name = data.name //text a minifier sinon ERREUR
       props.description_textarea = ''
       for (const [key, value] of Object.entries(data)) {
-        if(key === "description"){
-          const codeStartIndex = value.indexOf("<code>");
-            if (codeStartIndex !== -1){
-              const parts = value.split("<br><code>");
-            
-              props[key] = parts[0]
-              props.description_textarea = parts[1].replace("</code>", "");
-            }else{
-              props[key] = value
-            }
-        }else{
+        if (key === 'description') {
+          const codeStartIndex = value.indexOf('<code>')
+          if (codeStartIndex !== -1) {
+            const parts = value.split('<br><code>')
+
+            props[key] = parts[0]
+            props.description_textarea = parts[1].replace('</code>', '')
+          } else {
+            props[key] = value
+          }
+        } else {
           props[key] = value
         }
 
