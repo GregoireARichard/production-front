@@ -61,20 +61,20 @@ const props = defineProps({
   },
 })
 
-const hostRef = ref<HTMLElement | null>(null)
-const usernameRef = ref<HTMLElement | null>(null)
-const portRef = ref<HTMLElement | null>(null)
+const hostRef = ref<string | null>(null)
+const usernameRef = ref<string | null>(null)
+const portRef = ref<string | null>(null)
 
 const takeHost = (e: Event) => {
-  hostRef.value = e.target?.value
+  hostRef.value = (e.target as HTMLInputElement).value
 }
 
 const takeUsername = (e: Event) => {
-  usernameRef.value = e.target?.value
+  usernameRef.value = (e.target as HTMLInputElement).value
 }
 
 const takePort = (e: Event) => {
-  portRef.value = e.target?.value
+  portRef.value = (e.target as HTMLInputElement).value
 }
 
 const fetchSSH = async () => {

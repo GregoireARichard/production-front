@@ -14,7 +14,7 @@
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
           <Button @click="fetchData"> Envoyer le mail </Button>
-          <p v-if="isSend">Email envoyé !</p>
+          <p v-if="isSending">Email envoyé !</p>
         </div>
       </main>
     </template>
@@ -27,16 +27,15 @@ import { ref } from 'vue'
 const emailRef = ref<string | null>(null)
 const fullNameRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
+const isSending = ref<boolean>(false)
 
-const takeEmail = (e) => {
-  emailRef.value = e.target.value
+const takeEmail = (e: Event) => {
+  emailRef.value = (e.target as HTMLInputElement).value
 }
 
-const takeFullName = (e) => {
-  fullNameRef.value = e.target.value
+const takeFullName = (e: Event) => {
+  fullNameRef.value = (e.target as HTMLInputElement).value
 }
-
-let isSend = false
 
 const fetchData = async () => {
   try {
@@ -48,14 +47,13 @@ const fetchData = async () => {
       body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value }),
     })
     const data = await res.json()
-
     console.log(data)
 
+    isSending.value = true
     localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
   } catch (error) {
     console.error(error)
   }
-  isSend = true
 }
 </script>
 

@@ -6,12 +6,7 @@
   </header>
 </template>
 
-<script setup>
-// console.group('HEADER')
-// console.log('LINK: ', JSON.parse(localStorage.getItem('magicLink')))
-// console.log('TOKEN: ', localStorage.getItem('token'))
-// console.groupEnd()
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .header {

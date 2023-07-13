@@ -72,15 +72,15 @@ const addExercice = ref<string | null>(null)
 const removeExercice = ref<string | null>(null)
 
 const takeAddExercise = (e: Event) => {
-  addExercice.value = e.target?.value
+  addExercice.value = (e.target as HTMLInputElement).value
 }
 
 const takeRemoveExercise = (e: Event) => {
-  removeExercice.value = e.target?.value
+  removeExercice.value = (e.target as HTMLInputElement).value
 }
 
 const takeState = (e: Event) => {
-  stateRef.value = e.target?.checked
+  stateRef.value = (e.target as HTMLInputElement).checked
 }
 
 /* --------- Data */
@@ -108,9 +108,9 @@ const tableExercise = [
 ]
 
 const postAddExercise = async () => {
-  const url = import.meta.env.VITE_BACK_URL
-  const token = JSON.parse(localStorage.getItem('tokenAdmin'))
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+  const url = import.meta.env.VITE_BACK_URL as string
+  const token = JSON.parse(localStorage.getItem('tokenAdmin') as string)
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
 
   if (isAdminConnected) {
     try {
@@ -132,8 +132,8 @@ const postAddExercise = async () => {
 
 const postRemoveExercise = async () => {
   const url = import.meta.env.VITE_BACK_URL
-  const token = JSON.parse(localStorage.getItem('tokenAdmin'))
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+  const token = JSON.parse(localStorage.getItem('tokenAdmin') as string)
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
 
   if (isAdminConnected) {
     try {
@@ -158,8 +158,8 @@ const postRemoveExercise = async () => {
 
 const getResults = async () => {
   const url = import.meta.env.VITE_BACK_URL
-  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin'))
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin') as string)
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
 
   if (isAdminConnected) {
     try {
@@ -183,8 +183,8 @@ const getResults = async () => {
 
 const getExerciseList = async () => {
   const url = import.meta.env.VITE_BACK_URL
-  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin'))
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected'))
+  const accessToken = JSON.parse(localStorage.getItem('tokenAdmin') as string)
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
 
   if (isAdminConnected) {
     try {
