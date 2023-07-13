@@ -58,9 +58,6 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue'
 
-// const isFirst = ref(true)
-// const isSecond = ref(false)
-
 const props = reactive({
   clue: '',
   clue_textarea: '',
@@ -147,6 +144,12 @@ const fetchSSH = async (formData = null) => {
 }
 
 onMounted(() => {
+  const tokenAccess = JSON.parse(localStorage.getItem('token') as string)
+
+  if (!tokenAccess) {
+    window.location.href = '/'
+  }
+
   fetchSSH(null)
 })
 

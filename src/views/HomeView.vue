@@ -9,12 +9,14 @@
             <Toasters name="caution">Attention, le domaine hetic.eu ne fonctionne pas</Toasters>
           </div>
           <form action="" class="form">
-            <Input type="text" placeholder="Full name" class="form_input" @input="takeFullName" required />
-            <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
-            <span class="form_info" ref="infoRef">Rentrez un email valide</span>
+            <Input type="text" placeholder="Full name*" class="form_input" @input="takeFullName" required />
+            <Input type="email" placeholder="Email*" class="form_input" @input="checkEmail" required />
           </form>
           <Toasters name="valid" v-if="props.isSend">Email envoyé, regardez dans vos notifications !</Toasters>
           <Button @click="fetchData"> Envoyer le mail </Button>
+          <Toasters v-show="isError" name="caution">
+            <p ref="toasterRef">Attention, votre addresse mail n'est pas correcte</p>
+          </Toasters>
         </div>
       </main>
     </template>
@@ -24,24 +26,57 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
+const toasterRef = ref<HTMLElement | null>()
 const emailRef = ref<string | null>(null)
 const fullNameRef = ref<string | null>(null)
-const infoRef = ref<HTMLElement | null>(null)
 const isSending = ref<boolean>(false)
+const isError = ref<boolean>(false)
 
 const props = reactive({
   isSend: false,
 })
 
-const takeEmail = (e: Event) => {
-  emailRef.value = (e.target as HTMLInputElement).value
-}
-
 const takeFullName = (e: Event) => {
   fullNameRef.value = (e.target as HTMLInputElement).value
 }
 
+const checkEmail = (e: Event) => {
+  const regexEmail = /\S+@\S+\.\S+/
+  emailRef.value = (e.target as HTMLInputElement).value
+
+  if (emailRef.value.search(regexEmail) === 0) {
+    isError.value = false
+  } else if (emailRef.value.search(regexEmail) === -1) {
+    isError.value = true
+  }
+}
+
+const emptyInput = () => {
+  isError.value = true
+
+  const inputs = document.querySelectorAll('input')
+  inputs.forEach((input) => {
+    input.style.border = '1px solid red'
+  })
+
+  const toaster = toasterRef.value as HTMLElement
+  toaster.textContent = 'Veuillez remplir les champs obligatoires (*)'
+
+  setTimeout(() => {
+    inputs.forEach((input) => {
+      input.style.border = '1px solid black'
+    })
+
+    isError.value = false
+  }, 4000)
+}
+
+/* ----------- Data */
 const fetchData = async () => {
+  if (fullNameRef.value === null || emailRef.value === null) {
+    return emptyInput()
+  }
+
   try {
     const res = await fetch('https://rendu-back.gravity-zero.fr/user/register', {
       method: 'POST',
