@@ -3,8 +3,33 @@
     <template #main>
       <main class="main">
         <div class="block">
-          <QuestionPassed v-if="questionData?.passed" v-bind="passedData"></QuestionPassed>
-          <Question v-if="!questionData?.passed" class="question" v-bind="questionData"> </Question>
+          <div class="head">
+            <Toasters v-if="props.error" name="error" class="error">
+              {{ props.error.title }}
+              {{ props.error.message }} <br />
+              Code d'erreur: {{ props.error.status_code }}
+            </Toasters>
+            <div class="head_title">
+              <h4>Question {{ props.question_number }}: {{ props.name }}</h4>
+              <p>{{ props.user_points }}/{{ props.total_point }}</p>
+            </div>
+            <p class="head_text">{{ props.description }}</p>
+            <div v-if="props.description_textarea.length > 0">
+              <br />
+              <textarea rows="15" cols="100">{{ props.description_textarea }}</textarea>
+            </div>
+            <Toasters name="clue">
+              <p v-html="props.clue"></p>
+            </Toasters>
+            <p>Points de la question: {{ props.exercise_points }}</p>
+          </div>
+          <template v-if="props.name === 'SSH'">
+            <FormSSH @test-connection="fetchSSH"></FormSSH>
+          </template>
+
+          <template v-if="props.name === 'SGBDR'">
+            <FormSGBDR @test-connection="fetchSSH"></FormSGBDR>
+          </template>
         </div>
       </main>
     </template>
@@ -12,52 +37,81 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 
-const questionData = ref<string[]>([])
+// const isFirst = ref(true)
+// const isSecond = ref(false)
 
-const passedData = {
+const props = reactive({
+  clue: '',
+  description: '',
+  description_textarea: '',
+  error: false,
+  exercise_points: 0,
+  name: '',
+  passed: false,
+  total_point: 0,
+  user_points: 0,
   question_number: 1,
-  name: 'SSH',
-  description:
-    "Merci de me donner l'accès à votre serveur avec la clé suivante et de me fournir les informations de connexion associé:<br><code>Clé publique RSA</code>",
-  clue: 'Le fichier où doit être copié la clé publique est le suivant: <code>/home/<votre_utilisateur>/.ssh/authorized_keys</code>',
-  points: 2,
-  group_id: 1,
-}
+})
 
-const getQuestion = async () => {
+const fetchSSH = async (formData = null) => {
   const token = localStorage.getItem('token')
 
   try {
+    let body: string | null = null
+
+    if (formData) {
+      body = JSON.stringify({
+        name: props.name.toLowerCase(),
+        test: formData,
+      })
+    }
+
     const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        name: 'ssh',
-        group_id: 1,
-        test: {
-          host: '193.70.84.157',
-          username: 'ubuntu',
-          port: 22,
-        },
-      }),
+
+      body: body,
     })
-    const data = await res.json()
 
-    questionData.value = data
+    if (res.status === 200) {
+      const data = await res.json()
+      props.name = data.name //text a minifier sinon ERREUR
+      props.description_textarea = ''
+      for (const [key, value] of Object.entries(data)) {
+        if (key === 'description') {
+          const codeStartIndex = value.indexOf('<code>')
+          if (codeStartIndex !== -1) {
+            const parts = value.split('<br><code>')
 
-    console.log(data)
+            props[key] = parts[0]
+            props.description_textarea = parts[1].replace('</code>', '')
+          } else {
+            props[key] = value
+          }
+        } else {
+          props[key] = value
+        }
+
+        // console.log(`${key}: ${value}`)
+      }
+
+      console.log(props)
+
+      // isFirst.value = false
+      // isSecond.value = true
+    }
   } catch (error) {
     console.error(error)
   }
 }
 
 onMounted(() => {
-  getQuestion()
+  fetchSSH(null)
 })
 </script>
 
@@ -78,16 +132,54 @@ onMounted(() => {
     background-color: #ccb4f0;
   }
 }
-.question {
-  display: block;
-  margin-bottom: 1rem;
-}
+.head {
+  position: relative;
+  width: 100%;
+  margin-bottom: 3rem;
 
-.score_container {
-  margin-bottom: 1rem;
-  .score {
-    font-size: large;
-    font-weight: bold;
+  &_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    h4 {
+      position: relative;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-left: 1.4rem;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -1.4rem;
+        transform: translate(-50%, -50%);
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        background-color: black;
+      }
+    }
+
+    p {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
+    }
+    .error {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &_text {
+    font-size: 1.6rem;
+    font-weight: normal;
+    line-height: 1.2;
+    width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
 </style>

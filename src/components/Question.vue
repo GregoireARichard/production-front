@@ -1,5 +1,10 @@
 <template>
   <div class="head">
+    <Toasters v-if="error" name="error" class="error">
+      {{ error.title }}
+      {{ error.message }} <br />
+      Code d'erreur: {{ error.status_code }}
+    </Toasters>
     <div class="head_title">
       <h4>Question 1: SSH</h4>
       <p>{{ user_points }}/{{ total_point }}</p>
@@ -10,21 +15,23 @@
     </Toasters>
     <p>Points de la question: {{ exercise_points }}</p>
   </div>
-  <Toasters v-if="error" name="error">
-    {{ error.title }}
-    {{ error.message }} <br />
-    Code d'erreur: {{ error.status_code }}
-  </Toasters>
-  <form class="form">
-    <Input type="text" placeholder="Host" class="form_input" @input="takeHost" required />
-    <Input type="text" placeholder="Username" class="form_input" @input="takeUsername" required />
-    <Input type="text" placeholder="Port" class="form_input" @input="takePort" required />
-  </form>
-  <Button class="connexion_button" @click="fetchSSH">Tester la connexion</Button>
+  <template v-if="isFirst">
+    <FormSSH
+      @test-connection="fetchSSH"
+    ></FormSSH>
+  </template>
+
+  <template v-if="isSecond">
+    <FormSGBDR
+      @test-connection="fetchSSH"
+    ></FormSGBDR>
+  </template>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+
+let isFirst = true;
+let isSecond = false;
 
 const props = defineProps({
   clue: {
@@ -58,9 +65,10 @@ const props = defineProps({
   user_points: {
     type: Number,
     required: true,
-  },
+  }
 })
 
+<<<<<<< HEAD
 const hostRef = ref<string | null>(null)
 const usernameRef = ref<string | null>(null)
 const portRef = ref<string | null>(null)
@@ -76,8 +84,29 @@ const takeUsername = (e: Event) => {
 const takePort = (e: Event) => {
   portRef.value = (e.target as HTMLInputElement).value
 }
+=======
+// const host = ref('')
+// const username = ref('')
+// const port = ref('')
 
-const fetchSSH = async () => {
+// const takeHost = (e: Event) => {
+//   host.value = (e.target as HTMLInputElement).value
+// }
+
+// const takeUsername = (e: Event) => {
+//   username.value = (e.target as HTMLInputElement).value
+// }
+
+// const takePort = (e: Event) => {
+//   port.value = (e.target as HTMLInputElement).value
+// }
+
+// console.log(host.value, username.value, port.value);
+
+
+const fetchSSH = async (formData) => {
+>>>>>>> 85fed4d354053f498d40c04214e2585175c1e7de
+
   const token = localStorage.getItem('token')
 
   try {
@@ -89,17 +118,20 @@ const fetchSSH = async () => {
       },
       body: JSON.stringify({
         name: 'ssh',
-        group_id: 1,
-        test: {
-          host: hostRef.value,
-          username: usernameRef.value,
-          port: portRef.value,
-        },
+        test: formData,
       }),
     })
-    const data = await res.json()
 
-    console.log(data)
+    if(res.status === 200)
+    {
+      const data = await res.json()
+      
+      isFirst = false;
+      isSecond = true;
+
+      emit('data-to-parent', data);
+    }
+
   } catch (error) {
     console.error(error)
   }
@@ -143,6 +175,9 @@ const fetchSSH = async () => {
       font-weight: bold;
       color: #000;
     }
+    .error {
+      margin-bottom: 1rem;
+    }
   }
 
   &_text {
@@ -152,21 +187,6 @@ const fetchSSH = async () => {
     width: 100%;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
-  }
-}
-
-.form {
-  position: relative;
-  display: block;
-  width: 100%;
-  margin-bottom: 4rem;
-
-  &_info {
-    display: none;
-    font-size: 1.4rem;
-    font-weight: normal;
-    color: #000;
-    padding-left: 2.5rem;
   }
 }
 </style>

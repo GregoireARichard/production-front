@@ -8,6 +8,9 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Button: typeof import('./components/Button.vue')['default']
+    Form: typeof import('./components/Form.vue')['default']
+    FormSGBDR: typeof import('./components/FormSGBDR.vue')['default']
+    FormSSH: typeof import('./components/FormSSH.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
     Input: typeof import('./components/Input.vue')['default']
     Layout: typeof import('./components/Layout.vue')['default']
