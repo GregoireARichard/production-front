@@ -81,7 +81,7 @@ const takeRemoveExercise = (e: Event) => {
 }
 
 const takeState = (e: Event) => {
-  stateRef.value = (e.target as HTMLInputElement).checked
+  stateRef.value = !(e.target as HTMLInputElement).checked
 }
 
 /* --------- Data */
@@ -123,8 +123,6 @@ const postRemoveExercise = async () => {
       },
       body: JSON.stringify({ state: stateRef?.value, name: removeExercice?.value }),
     })
-
-    console.log(res)
 
     getExerciseList()
 
