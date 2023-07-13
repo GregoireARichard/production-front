@@ -112,8 +112,6 @@ const postRemoveExercise = async () => {
   const url = import.meta.env.VITE_BACK_URL
   const token = JSON.parse(localStorage.getItem('tokenAdmin') as string)
 
-  console.log(stateRef.value)
-
   try {
     const res = await fetch(`${url}/admin/exercise`, {
       method: 'POST',
@@ -125,8 +123,6 @@ const postRemoveExercise = async () => {
     })
 
     getExerciseList()
-
-    // console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -147,7 +143,6 @@ const getResults = async () => {
         },
       })
       const data = await res.json()
-      // console.log(data)
 
       resultTable.value = data
       configFile[0].content = data

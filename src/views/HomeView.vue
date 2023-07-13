@@ -81,7 +81,6 @@ const fetchData = async () => {
       body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value, group_id: 1 }),
     })
     const data = await res.json()
-    console.log(data)
 
     isSending.value = true
     localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
