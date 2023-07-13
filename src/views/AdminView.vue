@@ -26,11 +26,11 @@ const passwordRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
 
 const takeEmail = (e: Event) => {
-  emailRef.value = e.target?.value
+  emailRef.value = (e.target as HTMLInputElement).value
 }
 
 const takePassword = (e: Event) => {
-  passwordRef.value = e.target?.value
+  passwordRef.value = (e.target as HTMLInputElement).value
 }
 
 /* --------- Data */

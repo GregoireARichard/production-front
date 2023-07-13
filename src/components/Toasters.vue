@@ -14,6 +14,7 @@
     </p>
   </div>
 </template>
+
 <script setup lang="ts">
 interface Props {
   name?: keyof typeof toasterIcon
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const iconPath = '/icons'
+
 const toasterIcon = {
   valid: {
     url: iconPath + '/check.svg',
@@ -45,6 +47,7 @@ const toasterIcon = {
 const iconUrl = `${toasterIcon[props.name].url}`
 const iconAlt = `${toasterIcon[props.name].alt}`
 </script>
+
 <style scope lang="scss">
 .toaster-container {
   display: flex;

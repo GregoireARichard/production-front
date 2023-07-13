@@ -8,6 +8,7 @@
     <span>Bravo, vous avez réussi la question</span>
   </Toasters>
 </template>
+
 <script setup lang="ts">
 const props = defineProps({
   question_number: {
@@ -32,6 +33,7 @@ const props = defineProps({
   },
 })
 </script>
+
 <style scoped lang="scss">
 .head {
   position: relative;

@@ -1,37 +1,32 @@
 <template>
   <div class="head">
-    <Toasters v-if="error" name="error" class="error">
-      {{ error.title }}
-      {{ error.message }} <br />
-      Code d'erreur: {{ error.status_code }}
-    </Toasters>
     <div class="head_title">
-      <h4>Question 1: SSH</h4>
-      <p>{{ user_points }}/{{ total_point }}</p>
+      <h4>Question 2: SGBDR</h4>
+      <p class="head_text">{{ user_points }}/{{ total_point }}</p>
     </div>
     <p class="head_text">{{ description }}</p>
+
     <Toasters name="clue">
       <p>{{ clue }}</p>
     </Toasters>
-    <p>Points de la question: {{ exercise_points }}</p>
+    <p>Point de la question: exercice_points</p>
   </div>
-  <template v-if="isFirst">
-    <FormSSH
-      @test-connection="fetchSSH"
-    ></FormSSH>
-  </template>
-
-  <template v-if="isSecond">
-    <FormSGBDR
-      @test-connection="fetchSSH"
-    ></FormSGBDR>
-  </template>
+  <Toasters v-if="error" name="error">
+    {{ error.title }}
+    {{ error.message }} <br />
+    Code d'erreur: {{ error.status_code }}
+  </Toasters>
+  <form class="form">
+    <Input type="text" placeholder="Host" class="form_input" @input="takeHost" required />
+    <Input type="text" placeholder="Username" class="form_input" @input="takeUsername" required />
+    <Input type="password" placeholder="Password" class="form_input" @input="takePassword" required />
+    <Input type="text" placeholder="Port" class="form_input" @input="takePort" required />
+  </form>
+  <Button class="connexion_button" @click="fetchSGBDR">Tester la connexion</Button>
 </template>
 
 <script setup lang="ts">
-
-let isFirst = true;
-let isSecond = false;
+import { ref } from 'vue'
 
 const props = defineProps({
   clue: {
@@ -65,12 +60,12 @@ const props = defineProps({
   user_points: {
     type: Number,
     required: true,
-  }
+  },
 })
 
-<<<<<<< HEAD
 const hostRef = ref<string | null>(null)
 const usernameRef = ref<string | null>(null)
+const passwordRef = ref<string | null>(null)
 const portRef = ref<string | null>(null)
 
 const takeHost = (e: Event) => {
@@ -81,32 +76,15 @@ const takeUsername = (e: Event) => {
   usernameRef.value = (e.target as HTMLInputElement).value
 }
 
+const takePassword = (e: Event) => {
+  usernameRef.value = (e.target as HTMLInputElement).value
+}
+
 const takePort = (e: Event) => {
   portRef.value = (e.target as HTMLInputElement).value
 }
-=======
-// const host = ref('')
-// const username = ref('')
-// const port = ref('')
 
-// const takeHost = (e: Event) => {
-//   host.value = (e.target as HTMLInputElement).value
-// }
-
-// const takeUsername = (e: Event) => {
-//   username.value = (e.target as HTMLInputElement).value
-// }
-
-// const takePort = (e: Event) => {
-//   port.value = (e.target as HTMLInputElement).value
-// }
-
-// console.log(host.value, username.value, port.value);
-
-
-const fetchSSH = async (formData) => {
->>>>>>> 85fed4d354053f498d40c04214e2585175c1e7de
-
+const fetchSGBDR = async () => {
   const token = localStorage.getItem('token')
 
   try {
@@ -117,21 +95,19 @@ const fetchSSH = async (formData) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        name: 'ssh',
-        test: formData,
+        name: 'sgbdr',
+        group_id: 1,
+        test: {
+          host: hostRef.value,
+          username: usernameRef.value,
+          password: passwordRef.value,
+          port: portRef.value,
+        },
       }),
     })
+    const data = await res.json()
 
-    if(res.status === 200)
-    {
-      const data = await res.json()
-      
-      isFirst = false;
-      isSecond = true;
-
-      emit('data-to-parent', data);
-    }
-
+    console.log(data)
   } catch (error) {
     console.error(error)
   }
@@ -175,9 +151,6 @@ const fetchSSH = async (formData) => {
       font-weight: bold;
       color: #000;
     }
-    .error {
-      margin-bottom: 1rem;
-    }
   }
 
   &_text {
@@ -189,14 +162,19 @@ const fetchSSH = async (formData) => {
     overflow-wrap: anywhere;
   }
 }
-</style>
 
-<!-- const fetchList = {
-  SSH: 'fetchSSH',
-  SGBDR: 'fetchSGBDR',
-  SSHError: 'fetchSSHError',
+.form {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-bottom: 4rem;
+
+  &_info {
+    display: none;
+    font-size: 1.4rem;
+    font-weight: normal;
+    color: #000;
+    padding-left: 2.5rem;
+  }
 }
-
-const currentFetch = computed(() => {
-  return `fetchList.${props.name}`
-}) -->
+</style>
