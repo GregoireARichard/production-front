@@ -19,7 +19,7 @@
             <Button @click="postAddExercise"> mettre à jour </Button>
           </div>
           <div class="container">
-            <label for="removeExercice">Supprimer un exercice</label>
+            <label for="removeExercice">Désactiver un exercice</label>
             <Input
               type="text"
               id="removeExercice"
@@ -39,7 +39,7 @@
               </tr>
               <tr v-for="(item, index) in exerciseList" :key="index" class="score_body">
                 <td>{{ item.name }}</td>
-                <td>{{ item.is_active }}</td>
+                <td>{{ item.is_active === 0 ? 'false' : 'true' }}</td>
               </tr>
             </table>
             <Button @click="postRemoveExercise"> mettre à jour </Button>
@@ -49,7 +49,7 @@
               <th>Nom</th>
               <th>Points</th>
             </tr>
-            <tr v-for="(item, index) in tableExercise" :key="index" class="score_body">
+            <tr v-for="(item, index) in resultTable" :key="index" class="score_body">
               <td>{{ item.full_name }}</td>
               <td>{{ item.points }} / 20</td>
             </tr>
@@ -66,10 +66,11 @@ import { onMounted, ref } from 'vue'
 import xlsx from 'json-as-xlsx'
 
 const exerciseRef = ref<string | null>(null)
-const stateRef = ref<boolean | null>(null)
+const stateRef = ref<boolean | null>(false)
 const exerciseList = ref<string[]>([])
 const addExercice = ref<string | null>(null)
 const removeExercice = ref<string | null>(null)
+const resultTable = ref<string[]>([])
 
 const takeAddExercise = (e: Event) => {
   addExercice.value = (e.target as HTMLInputElement).value
@@ -84,29 +85,6 @@ const takeState = (e: Event) => {
 }
 
 /* --------- Data */
-const tableExercise = [
-  {
-    full_name: 'Amine',
-    points: '17',
-  },
-  {
-    full_name: 'Amine',
-    points: '13',
-  },
-  {
-    full_name: 'Amine',
-    points: '15',
-  },
-  {
-    full_name: 'Amine',
-    points: '04',
-  },
-  {
-    full_name: 'Amine',
-    points: '07',
-  },
-]
-
 const postAddExercise = async () => {
   const url = import.meta.env.VITE_BACK_URL as string
   const token = JSON.parse(localStorage.getItem('tokenAdmin') as string)
@@ -133,26 +111,26 @@ const postAddExercise = async () => {
 const postRemoveExercise = async () => {
   const url = import.meta.env.VITE_BACK_URL
   const token = JSON.parse(localStorage.getItem('tokenAdmin') as string)
-  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
 
-  if (isAdminConnected) {
-    try {
-      const res = await fetch(`${url}/admin/exercise`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ state: stateRef?.value, name: exerciseRef?.value }),
-      })
-      const data = await res.json()
+  console.log(stateRef.value)
 
-      // getExerciseList()
+  try {
+    const res = await fetch(`${url}/admin/exercise`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ state: stateRef?.value, name: removeExercice?.value }),
+    })
 
-      console.log(data)
-    } catch (error) {
-      console.error(error)
-    }
+    console.log(res)
+
+    getExerciseList()
+
+    // console.log(data)
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -171,10 +149,10 @@ const getResults = async () => {
         },
       })
       const data = await res.json()
+      // console.log(data)
 
-      // const resultTable = data[0].results
-
-      console.log(data)
+      resultTable.value = data
+      configFile[0].content = data
     } catch (error) {
       console.error(error)
     }
@@ -199,7 +177,7 @@ const getExerciseList = async () => {
 
       exerciseList.value = data
 
-      console.log(data)
+      // console.log(data)
     } catch (error) {
       console.error(error)
     }
@@ -222,11 +200,17 @@ const configFile = [
       { label: 'Nom', value: 'full_name' },
       { label: 'Points', value: 'points' },
     ],
-    content: tableExercise,
+    content: [],
   },
 ]
 
 onMounted(() => {
+  const isAdminConnected = JSON.parse(localStorage.getItem('isAdminConnected') as string)
+
+  if (!isAdminConnected) {
+    window.location.href = '/admin'
+  }
+
   getResults()
   getExerciseList()
 })
@@ -241,6 +225,7 @@ onMounted(() => {
   width: 100vw;
   min-height: 100vh;
   margin-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .block {

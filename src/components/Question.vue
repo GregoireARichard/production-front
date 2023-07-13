@@ -16,22 +16,17 @@
     <p>Points de la question: {{ exercise_points }}</p>
   </div>
   <template v-if="isFirst">
-    <FormSSH
-      @test-connection="fetchSSH"
-    ></FormSSH>
+    <FormSSH @test-connection="fetchSSH"></FormSSH>
   </template>
 
   <template v-if="isSecond">
-    <FormSGBDR
-      @test-connection="fetchSSH"
-    ></FormSGBDR>
+    <FormSGBDR @test-connection="fetchSSH"></FormSGBDR>
   </template>
 </template>
 
 <script setup lang="ts">
-
-let isFirst = true;
-let isSecond = false;
+let isFirst = ref<boolean>(true)
+let isSecond = ref<boolean>(false)
 
 const props = defineProps({
   clue: {
@@ -65,48 +60,10 @@ const props = defineProps({
   user_points: {
     type: Number,
     required: true,
-  }
+  },
 })
 
-<<<<<<< HEAD
-const hostRef = ref<string | null>(null)
-const usernameRef = ref<string | null>(null)
-const portRef = ref<string | null>(null)
-
-const takeHost = (e: Event) => {
-  hostRef.value = (e.target as HTMLInputElement).value
-}
-
-const takeUsername = (e: Event) => {
-  usernameRef.value = (e.target as HTMLInputElement).value
-}
-
-const takePort = (e: Event) => {
-  portRef.value = (e.target as HTMLInputElement).value
-}
-=======
-// const host = ref('')
-// const username = ref('')
-// const port = ref('')
-
-// const takeHost = (e: Event) => {
-//   host.value = (e.target as HTMLInputElement).value
-// }
-
-// const takeUsername = (e: Event) => {
-//   username.value = (e.target as HTMLInputElement).value
-// }
-
-// const takePort = (e: Event) => {
-//   port.value = (e.target as HTMLInputElement).value
-// }
-
-// console.log(host.value, username.value, port.value);
-
-
-const fetchSSH = async (formData) => {
->>>>>>> 85fed4d354053f498d40c04214e2585175c1e7de
-
+const fetchSSH = async (formData: any) => {
   const token = localStorage.getItem('token')
 
   try {
@@ -122,16 +79,14 @@ const fetchSSH = async (formData) => {
       }),
     })
 
-    if(res.status === 200)
-    {
+    if (res.status === 200) {
       const data = await res.json()
-      
-      isFirst = false;
-      isSecond = true;
 
-      emit('data-to-parent', data);
+      isFirst.value = false
+      isSecond.value = true
+
+      emit('data-to-parent', data)
     }
-
   } catch (error) {
     console.error(error)
   }
