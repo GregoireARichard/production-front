@@ -47,11 +47,6 @@ const fetchData = async () => {
       body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value, group_id: 1 }),
     })
     const data = await res.json()
-<<<<<<< HEAD
-=======
-
-    //if(data.status > )
->>>>>>> 85fed4d354053f498d40c04214e2585175c1e7de
     console.log(data)
 
     isSending.value = true
