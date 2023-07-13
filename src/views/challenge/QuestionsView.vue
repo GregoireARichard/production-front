@@ -21,9 +21,8 @@
             <Toasters name="clue">
               <p>
                 {{ props.clue }}
-                <textarea v-if="props.clue_textarea.length > 0" rows="1" color="30">{{ props.clue_textarea }}</textarea>
+                <p class="clue_code" v-if="props.clue_textarea.length > 0">{{ props.clue_textarea }}</p>
               </p>
-              <div></div>
             </Toasters>
             <p>Points de la question: {{ props.exercise_points }}</p>
           </div>
@@ -85,7 +84,6 @@ const fetchSSH = async (formData = null) => {
 
     if (res.status === 200) {
       const data = await res.json()
-      props.question_number += 1
 
       props.name = data.name
       props.description_textarea = ''
@@ -195,6 +193,18 @@ onMounted(() => {
     width: 100%;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+  }
+}
+
+.clue {
+  &_code{
+    display: inline;
+    border: solid black 1px;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background-color: white;
+    width: fit-content;
+    text-align: center;
   }
 }
 </style>
