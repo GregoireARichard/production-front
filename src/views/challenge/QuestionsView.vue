@@ -123,6 +123,12 @@ const fetchSSH = async (formData = null) => {
 }
 
 onMounted(() => {
+  const tokenAccess = JSON.parse(localStorage.getItem('token') as string)
+
+  if (!tokenAccess) {
+    window.location.href = '/'
+  }
+
   fetchSSH(null)
 })
 </script>
