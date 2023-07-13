@@ -14,16 +14,20 @@
               <p>{{ props.user_points }}/{{ props.total_point }}</p>
             </div>
             <p class="head_text">{{ props.description }}</p>
+            <div v-if="props.description_textarea.length > 0">
+              <br>
+              <textarea rows="15" cols="100">{{ props.description_textarea}}</textarea>
+            </div>
             <Toasters name="clue">
               <p>{{ props.clue }}</p>
             </Toasters>
             <p>Points de la question: {{ props.exercise_points }}</p>
           </div>
-          <template v-if="isFirst">
+          <template v-if="props.name === 'SSH'">
             <FormSSH @test-connection="fetchSSH"></FormSSH>
           </template>
 
-          <template v-if="isSecond">
+          <template v-if="props.name === 'SGBDR'">
             <FormSGBDR @test-connection="fetchSSH"></FormSGBDR>
           </template>
         </div>
@@ -35,12 +39,13 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue'
 
-const isFirst = ref(true)
-const isSecond = ref(false)
+// const isFirst = ref(true)
+// const isSecond = ref(false)
 
 const props = reactive({
   clue: '',
   description: '',
+  description_textarea: '',
   error: false,
   exercise_points: 0,
   name: '',
@@ -58,11 +63,11 @@ const fetchSSH = async (formData = null) => {
 
     if (formData) {
       body = JSON.stringify({
-        name: 'ssh', //Le text minifier doit être utilisé ici
+        name: props.name.toLowerCase(), //Le text minifier doit être utilisé ici
         test: formData,
       })
     }
-    console.log(props.name)
+
 
     const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
       method: 'POST',
@@ -79,14 +84,21 @@ const fetchSSH = async (formData = null) => {
       props.name = data.name //text a minifier sinon ERREUR
 
       for (const [key, value] of Object.entries(data)) {
-        props[key] = value
+        if(key === "description"){
+          const parts = value.split("<br><code>");
+          props[key] = parts[0]
+          props.description_textarea = parts[1].replace("</code>", "");
+        }else{
+          props[key] = value
+        }
+
         // console.log(`${key}: ${value}`)
       }
 
       // console.log(props.clue)
 
-      isFirst.value = false
-      isSecond.value = true
+      // isFirst.value = false
+      // isSecond.value = true
     }
   } catch (error) {
     console.error(error)
