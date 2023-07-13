@@ -1,29 +1,40 @@
 <template>
-  <main class="main">
-    <slot />
-    <div class="block">
-      <div class="head">
-        <h4 class="head_title">{{ name }}</h4>
-        <p class="head_text">{{ description }}</p>
-        <Toasters name="clue">{{ clue }}</Toasters>
-        <p>Points de la question: {{ exercise_points }}</p>
-      </div>
-      <Toasters v-if="error" name="error">
-        {{ error.title }}
-        {{ error.message }} <br />
-        Code d'erreur: {{ error.status_code }}
-      </Toasters>
+  <div class="head">
+    <Toasters v-if="error" name="error" class="error">
+      {{ error.title }}
+      {{ error.message }} <br />
+      Code d'erreur: {{ error.status_code }}
+    </Toasters>
+    <div class="head_title">
+      <h4>Question 1: SSH</h4>
+      <p>{{ user_points }}/{{ total_point }}</p>
     </div>
-  </main>
+    <p class="head_text">{{ description }}</p>
+    <Toasters name="clue">
+      <p>{{ clue }}</p>
+    </Toasters>
+    <p>Points de la question: {{ exercise_points }}</p>
+  </div>
+  <template v-if="isFirst">
+    <FormSSH
+      @test-connection="fetchSSH"
+    ></FormSSH>
+  </template>
+
+  <template v-if="isSecond">
+    <FormSGBDR
+      @test-connection="fetchSSH"
+    ></FormSGBDR>
+  </template>
 </template>
 
 <script setup lang="ts">
+
+let isFirst = true;
+let isSecond = false;
+
 const props = defineProps({
-  error: {
-    type: Object,
-    required: false,
-  },
-  name: {
+  clue: {
     type: String,
     required: true,
   },
@@ -31,51 +42,101 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  clue: {
-    type: String,
-    required: true,
-  },
-  user_points: {
-    type: Number,
+  error: {
+    type: Object,
     required: true,
   },
   exercise_points: {
     type: Number,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  passed: {
+    type: Boolean,
+    required: true,
+  },
   total_point: {
     type: Number,
     required: true,
   },
+  user_points: {
+    type: Number,
+    required: true,
+  }
 })
+
+// const host = ref('')
+// const username = ref('')
+// const port = ref('')
+
+// const takeHost = (e: Event) => {
+//   host.value = (e.target as HTMLInputElement).value
+// }
+
+// const takeUsername = (e: Event) => {
+//   username.value = (e.target as HTMLInputElement).value
+// }
+
+// const takePort = (e: Event) => {
+//   port.value = (e.target as HTMLInputElement).value
+// }
+
+// console.log(host.value, username.value, port.value);
+
+
+const fetchSSH = async (formData) => {
+
+  const token = localStorage.getItem('token')
+
+  try {
+    const res = await fetch('https://rendu-back.gravity-zero.fr/production/exercise', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: 'ssh',
+        test: formData,
+      }),
+    })
+
+    if(res.status === 200)
+    {
+      const data = await res.json()
+      
+      isFirst = false;
+      isSecond = true;
+
+      emit('data-to-parent', data);
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
 </script>
 
 <style scoped lang="scss">
-.main {
+.head {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-  min-height: 100vh;
-  padding: 5rem 20rem;
-  .block {
-    position: relative;
-    padding: 5rem;
-    border-radius: 2rem;
-    background-color: #ccb4f0;
-  }
-  .head {
-    position: relative;
-    width: 100%;
-    margin-bottom: 3rem;
+  width: 100%;
+  margin-bottom: 3rem;
 
-    &_title {
+  &_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    h4 {
       position: relative;
       font-size: 1.6rem;
       font-weight: bold;
       text-transform: uppercase;
-      margin-bottom: 2rem;
       margin-left: 1.4rem;
 
       &::before {
@@ -90,14 +151,34 @@ const props = defineProps({
         background-color: black;
       }
     }
-    &_text {
-      font-size: 1.6rem;
-      font-weight: normal;
-      line-height: 1.2;
-      width: 100%;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
+
+    p {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #000;
     }
+    .error {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &_text {
+    font-size: 1.6rem;
+    font-weight: normal;
+    line-height: 1.2;
+    width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
 </style>
+
+<!-- const fetchList = {
+  SSH: 'fetchSSH',
+  SGBDR: 'fetchSGBDR',
+  SSHError: 'fetchSSHError',
+}
+
+const currentFetch = computed(() => {
+  return `fetchList.${props.name}`
+}) -->

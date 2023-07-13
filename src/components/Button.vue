@@ -8,6 +8,8 @@
 
 <style lang="scss" scoped>
 .button {
+  display: inline-block;
+  width: fit-content;
   font-size: 1.2rem;
   font-weight: bold;
   color: white;

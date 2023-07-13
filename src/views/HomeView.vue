@@ -45,10 +45,11 @@ const fetchData = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value }),
+      body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value, group_id: 1 }),
     })
     const data = await res.json()
 
+    //if(data.status > )
     console.log(data)
 
     localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
@@ -126,20 +127,3 @@ const fetchData = async () => {
   }
 }
 </style>
-
-<!-- // const checkEmail = (e) => {
-  //   const regexEmail = /\S+@\S+\.\S+/
-  
-  //   emailRef.value = e.target.value
-  
-  //   if (e.target.value.search(regexEmail) === 0) {
-  //     if (inputRef.value) {
-  //       inputRef.value.style.borderColor = 'black'
-  //     }
-  //   } else if (e.target.value.search(regexEmail) === -1) {
-  //     if (inputRef.value) {
-  //       error.value = true
-  //       inputRef.value.style.borderColor = 'red'
-  //     }
-  //   }
-  // } -->
