@@ -19,7 +19,11 @@
               <textarea rows="15" cols="100">{{ props.description_textarea }}</textarea>
             </div>
             <Toasters name="clue">
-              <p v-html="props.clue"></p>
+              <p>
+                {{ props.clue }}
+                <textarea v-if="props.clue_textarea.length > 0" rows="1" color="30">{{ props.clue_textarea }}</textarea>
+              </p>
+              <div></div>
             </Toasters>
             <p>Points de la question: {{ props.exercise_points }}</p>
           </div>
@@ -44,6 +48,7 @@ import { onMounted, ref, reactive } from 'vue'
 
 const props = reactive({
   clue: '',
+  clue_textarea: '',
   description: '',
   description_textarea: '',
   error: false,
@@ -80,7 +85,9 @@ const fetchSSH = async (formData = null) => {
 
     if (res.status === 200) {
       const data = await res.json()
-      props.name = data.name //text a minifier sinon ERREUR
+      props.question_number += 1
+
+      props.name = data.name
       props.description_textarea = ''
       for (const [key, value] of Object.entries(data)) {
         if (key === 'description') {
@@ -99,11 +106,19 @@ const fetchSSH = async (formData = null) => {
 
         // console.log(`${key}: ${value}`)
       }
+      for (const [key, value] of Object.entries(data)) {
+        if (key === 'clue') {
+          const codeStartIndex = value.indexOf('<code>')
+          if (codeStartIndex !== -1) {
+            const parts = value.split('<code>')
 
-      console.log(props)
-
-      // isFirst.value = false
-      // isSecond.value = true
+            props[key] = parts[0]
+            props.clue_textarea = parts[1].replace('</code>', '')
+          } else {
+            props[key] = value
+          }
+        }
+      }
     }
   } catch (error) {
     console.error(error)

@@ -13,8 +13,8 @@
             <Input type="email" placeholder="Email" class="form_input" @input="takeEmail" required />
             <span class="form_info" ref="infoRef">Rentrez un email valide</span>
           </form>
+          <Toasters name="valid" v-if="props.isSend">Email envoyé, regardez dans vos notifications !</Toasters>
           <Button @click="fetchData"> Envoyer le mail </Button>
-          <p v-if="isSending">Email envoyé !</p>
         </div>
       </main>
     </template>
@@ -22,12 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 const emailRef = ref<string | null>(null)
 const fullNameRef = ref<string | null>(null)
 const infoRef = ref<HTMLElement | null>(null)
 const isSending = ref<boolean>(false)
+
+const props = reactive({
+  isSend: false,
+})
 
 const takeEmail = (e: Event) => {
   emailRef.value = (e.target as HTMLInputElement).value
@@ -47,12 +51,8 @@ const fetchData = async () => {
       body: JSON.stringify({ email: emailRef?.value, full_name: fullNameRef?.value, group_id: 1 }),
     })
     const data = await res.json()
-<<<<<<< HEAD
-=======
 
-    //if(data.status > )
->>>>>>> 85fed4d354053f498d40c04214e2585175c1e7de
-    console.log(data)
+    props.isSend = data.ok
 
     isSending.value = true
     localStorage.setItem('magicLink', JSON.stringify(data?.details.linkJwt))
